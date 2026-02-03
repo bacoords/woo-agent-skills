@@ -1,9 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
 
+// WordPress.org Plugin API - includes version history when fields[] requested
 const SOURCES = {
-  woocommerceReleases: "https://api.github.com/repos/woocommerce/woocommerce/releases?per_page=30",
-  woocommercePluginInfo: "https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&slug=woocommerce",
+  woocommercePluginInfo:
+    "https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&slug=woocommerce&fields[]=versions&fields[]=requires&fields[]=tested&fields[]=requires_php&fields[]=last_updated&fields[]=active_installs",
 };
 
 function mkdirp(dirPath) {
@@ -31,43 +32,67 @@ async function fetchJson(url) {
   }
 }
 
-function normalizeWooCommerceReleases(payload) {
-  const releases = Array.isArray(payload) ? payload : [];
+/**
+ * Parse version string into components
+ */
+function parseVersion(versionStr) {
+  const parts = versionStr.split(".").map(Number);
+  return {
+    major: parts[0] || 0,
+    minor: parts[1] || 0,
+    patch: parts[2] || 0,
+  };
+}
 
-  // Filter to stable releases only (no RCs, betas, alphas)
-  const stable = releases
-    .filter((r) => {
-      if (!r || r.draft || r.prerelease) return false;
-      if (typeof r.tag_name !== "string") return false;
-      // Skip release candidates, betas, alphas
-      if (/-(rc|beta|alpha|dev)/i.test(r.tag_name)) return false;
+/**
+ * Compare two version strings (descending order for sort)
+ */
+function compareVersions(a, b) {
+  const pa = parseVersion(a);
+  const pb = parseVersion(b);
+  if (pa.major !== pb.major) return pb.major - pa.major;
+  if (pa.minor !== pb.minor) return pb.minor - pa.minor;
+  return pb.patch - pa.patch;
+}
+
+/**
+ * Normalize plugin info and extract release history
+ */
+function normalizePluginData(payload) {
+  if (!payload || typeof payload !== "object") {
+    return { error: "Invalid plugin info response" };
+  }
+
+  // Extract versions object - keys are version strings, values are download URLs
+  const versionsObj = payload.versions || {};
+  const versionKeys = Object.keys(versionsObj);
+
+  // Filter to stable releases only (no RCs, betas, alphas, trunk)
+  const stableVersions = versionKeys
+    .filter((v) => {
+      if (v === "trunk") return false;
+      if (/-(rc|beta|alpha|dev)/i.test(v)) return false;
+      // Must start with a number
+      if (!/^\d+\.\d+/.test(v)) return false;
       return true;
     })
-    .map((r) => {
-      // Extract version number from tag (e.g., "9.5.1" from "9.5.1")
-      const version = r.tag_name.replace(/^v/, "");
-      const [major, minor] = version.split(".").map(Number);
+    .sort(compareVersions);
 
-      return {
-        version,
-        major,
-        minor,
-        tag: r.tag_name,
-        name: typeof r.name === "string" ? r.name : null,
-        publishedAt: typeof r.published_at === "string" ? r.published_at : null,
-        url: typeof r.html_url === "string" ? r.html_url : null,
-      };
-    })
-    // Sort by version descending
-    .sort((a, b) => {
-      if (a.major !== b.major) return b.major - a.major;
-      if (a.minor !== b.minor) return b.minor - a.minor;
-      return 0;
-    });
+  // Build release objects
+  const releases = stableVersions.map((version) => {
+    const parsed = parseVersion(version);
+    return {
+      version,
+      major: parsed.major,
+      minor: parsed.minor,
+      patch: parsed.patch,
+      downloadUrl: versionsObj[version],
+    };
+  });
 
-  // Group by major version for easy reference
+  // Group by major version
   const byMajor = {};
-  for (const release of stable) {
+  for (const release of releases) {
     if (!byMajor[release.major]) {
       byMajor[release.major] = [];
     }
@@ -75,24 +100,22 @@ function normalizeWooCommerceReleases(payload) {
   }
 
   return {
-    latest: stable[0] ?? null,
-    recent: stable.slice(0, 20),
-    byMajorVersion: byMajor,
-  };
-}
-
-function normalizePluginInfo(payload) {
-  if (!payload || typeof payload !== "object") {
-    return { error: "Invalid plugin info response" };
-  }
-
-  return {
-    version: payload.version ?? null,
-    testedUpTo: payload.tested ?? null,
-    requiresWP: payload.requires ?? null,
-    requiresPHP: payload.requires_php ?? null,
-    lastUpdated: payload.last_updated ?? null,
-    activeInstalls: payload.active_installs ?? null,
+    // Current plugin info
+    current: {
+      version: payload.version ?? null,
+      testedUpTo: payload.tested ?? null,
+      requiresWP: payload.requires ?? null,
+      requiresPHP: payload.requires_php ?? null,
+      lastUpdated: payload.last_updated ?? null,
+      activeInstalls: payload.active_installs ?? null,
+    },
+    // Release history
+    releases: {
+      latest: releases[0] ?? null,
+      recent: releases.slice(0, 20),
+      byMajorVersion: byMajor,
+      totalCount: releases.length,
+    },
   };
 }
 
@@ -100,30 +123,30 @@ async function main() {
   const repoRoot = process.cwd();
   const outDir = path.join(repoRoot, "shared", "references");
 
-  const [releasesPayload, pluginInfoPayload] = await Promise.all([
-    fetchJson(SOURCES.woocommerceReleases),
-    fetchJson(SOURCES.woocommercePluginInfo),
-  ]);
+  const pluginPayload = await fetchJson(SOURCES.woocommercePluginInfo);
+  const data = normalizePluginData(pluginPayload);
 
-  const releases = normalizeWooCommerceReleases(releasesPayload);
-  const pluginInfo = normalizePluginInfo(pluginInfoPayload);
+  if (data.error) {
+    throw new Error(data.error);
+  }
 
   writeJson(path.join(outDir, "woocommerce-releases.json"), {
-    source: SOURCES.woocommerceReleases,
+    source: SOURCES.woocommercePluginInfo,
     fetchedAt: new Date().toISOString(),
-    ...releases,
+    ...data.releases,
   });
 
   writeJson(path.join(outDir, "woocommerce-plugin-info.json"), {
     source: SOURCES.woocommercePluginInfo,
     fetchedAt: new Date().toISOString(),
-    ...pluginInfo,
+    ...data.current,
   });
 
-  process.stdout.write("OK: updated shared/references/* upstream indices\n");
-  process.stdout.write(`  Latest WooCommerce: ${releases.latest?.version ?? "unknown"}\n`);
-  process.stdout.write(`  Requires PHP: ${pluginInfo.requiresPHP ?? "unknown"}\n`);
-  process.stdout.write(`  Tested up to WP: ${pluginInfo.testedUpTo ?? "unknown"}\n`);
+  process.stdout.write("OK: updated shared/references/* from WordPress.org\n");
+  process.stdout.write(`  Latest WooCommerce: ${data.releases.latest?.version ?? "unknown"}\n`);
+  process.stdout.write(`  Total releases: ${data.releases.totalCount}\n`);
+  process.stdout.write(`  Requires PHP: ${data.current.requiresPHP ?? "unknown"}\n`);
+  process.stdout.write(`  Tested up to WP: ${data.current.testedUpTo ?? "unknown"}\n`);
 }
 
 main().catch((err) => {

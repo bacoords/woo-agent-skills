@@ -1,6 +1,6 @@
 {
-  "source": "https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&slug=woocommerce",
-  "fetchedAt": "2026-02-03T18:03:04.365Z",
+  "source": "https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&slug=woocommerce&fields[]=versions&fields[]=requires&fields[]=tested&fields[]=requires_php&fields[]=last_updated&fields[]=active_installs",
+  "fetchedAt": "2026-02-03T18:24:33.641Z",
   "version": "10.4.3",
   "testedUpTo": "6.9.1",
   "requiresWP": "6.8",
