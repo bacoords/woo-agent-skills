@@ -1,7 +1,7 @@
 /**
  * AI-powered skill update generator
  *
- * Analyzes upstream changes and generates updates to affected skills.
+ * Analyzes upstream WooCommerce changes and generates updates to affected skills.
  * Designed to run in GitHub Actions with ANTHROPIC_API_KEY env var.
  *
  * Usage:
@@ -48,10 +48,10 @@ function writeJson(filePath, data) {
  */
 function getUpstreamStateHash(indices) {
   const state = {
-    wpLatest: indices.wordpress?.latest ?? null,
-    gbLatest: indices.gutenberg?.latest?.tag ?? null,
-    gbRecentCount: indices.gutenberg?.recent?.length ?? 0,
-    mapRowCount: indices.map?.rows?.length ?? 0,
+    wooLatest: indices.releases?.latest?.version ?? null,
+    wooMajor: indices.releases?.latest?.major ?? null,
+    requiresPHP: indices.pluginInfo?.requiresPHP ?? null,
+    testedUpTo: indices.pluginInfo?.testedUpTo ?? null,
   };
   // Simple hash: JSON stringify and take first 16 chars of base64
   const hash = Buffer.from(JSON.stringify(state)).toString("base64").slice(0, 16);
@@ -63,9 +63,8 @@ function getUpstreamStateHash(indices) {
  */
 function loadUpstreamIndices() {
   return {
-    wordpress: loadJson(path.join(REFERENCES_DIR, "wordpress-core-versions.json")),
-    gutenberg: loadJson(path.join(REFERENCES_DIR, "gutenberg-releases.json")),
-    map: loadJson(path.join(REFERENCES_DIR, "wp-gutenberg-version-map.json")),
+    releases: loadJson(path.join(REFERENCES_DIR, "woocommerce-releases.json")),
+    pluginInfo: loadJson(path.join(REFERENCES_DIR, "woocommerce-plugin-info.json")),
   };
 }
 
@@ -106,45 +105,50 @@ function detectChanges(lastState, currentState) {
   const last = lastState.state;
   const current = currentState.state;
 
-  // WordPress version change
-  if (last.wpLatest !== current.wpLatest) {
+  // WooCommerce major version change
+  if (last.wooMajor !== current.wooMajor) {
     changes.push({
-      type: "wordpress-release",
-      description: `WordPress updated: ${last.wpLatest} → ${current.wpLatest}`,
-      oldVersion: last.wpLatest,
-      newVersion: current.wpLatest,
-      riskLevel: "medium",
+      type: "woocommerce-major-release",
+      description: `WooCommerce major version: ${last.wooLatest} → ${current.wooLatest}`,
+      oldVersion: last.wooLatest,
+      newVersion: current.wooLatest,
+      riskLevel: "high",
       affectedSkills: [
-        "wp-block-themes",
-        "wp-block-development",
-        "wp-plugin-development",
+        "woo-project-triage",
+        "woo-extension-architecture",
+        "woo-orders-fulfillment",
+        "woo-payment-gateways",
       ],
     });
-  }
-
-  // Gutenberg version change
-  if (last.gbLatest !== current.gbLatest) {
+  } else if (last.wooLatest !== current.wooLatest) {
+    // Minor/patch version change
     changes.push({
-      type: "gutenberg-release",
-      description: `Gutenberg updated: ${last.gbLatest} → ${current.gbLatest}`,
-      oldVersion: last.gbLatest,
-      newVersion: current.gbLatest,
-      riskLevel: "medium",
-      affectedSkills: [
-        "wp-interactivity-api",
-        "wp-abilities-api",
-        "wp-block-development",
-      ],
-    });
-  }
-
-  // Map table updated (new mappings added)
-  if (last.mapRowCount !== current.mapRowCount) {
-    changes.push({
-      type: "version-map-update",
-      description: `WP↔Gutenberg mapping updated: ${last.mapRowCount} → ${current.mapRowCount} entries`,
+      type: "woocommerce-release",
+      description: `WooCommerce updated: ${last.wooLatest} → ${current.wooLatest}`,
+      oldVersion: last.wooLatest,
+      newVersion: current.wooLatest,
       riskLevel: "low",
-      affectedSkills: ["wordpress-router"],
+      affectedSkills: ["woo-project-triage"],
+    });
+  }
+
+  // PHP version requirement change
+  if (last.requiresPHP !== current.requiresPHP) {
+    changes.push({
+      type: "php-requirement-change",
+      description: `PHP requirement changed: ${last.requiresPHP} → ${current.requiresPHP}`,
+      riskLevel: "medium",
+      affectedSkills: ["woo-extension-architecture"],
+    });
+  }
+
+  // WordPress compatibility change
+  if (last.testedUpTo !== current.testedUpTo) {
+    changes.push({
+      type: "wp-compatibility-change",
+      description: `WordPress tested up to: ${last.testedUpTo} → ${current.testedUpTo}`,
+      riskLevel: "low",
+      affectedSkills: ["woo-project-triage"],
     });
   }
 
@@ -190,15 +194,16 @@ function buildAnalysisPrompt(changes, indices) {
     .map((c) => `- ${c.type}: ${c.description} (risk: ${c.riskLevel})`)
     .join("\n");
 
-  return `You are analyzing upstream changes to WordPress/Gutenberg to determine if skills need updates.
+  return `You are analyzing upstream changes to WooCommerce to determine if skills need updates.
 
 ## Detected Changes
 ${changesSummary}
 
 ## Current Upstream State
-- WordPress latest: ${indices.wordpress?.latest ?? "unknown"}
-- Gutenberg latest: ${indices.gutenberg?.latest?.tag ?? "unknown"}
-- Gutenberg release URL: ${indices.gutenberg?.latest?.url ?? "unknown"}
+- WooCommerce latest: ${indices.releases?.latest?.version ?? "unknown"}
+- WooCommerce release URL: ${indices.releases?.latest?.url ?? "unknown"}
+- Requires PHP: ${indices.pluginInfo?.requiresPHP ?? "unknown"}
+- Tested up to WP: ${indices.pluginInfo?.testedUpTo ?? "unknown"}
 
 ## Task
 Analyze these changes and determine:
@@ -235,7 +240,7 @@ function buildUpdatePrompt(skillName, skillContent, references, changes, indices
     .map(([name, content]) => `### ${name}\n${content.slice(0, 2000)}...`)
     .join("\n\n");
 
-  return `You are updating a WordPress development skill based on upstream changes.
+  return `You are updating a WooCommerce development skill based on upstream changes.
 
 ## Skill: ${skillName}
 
@@ -249,8 +254,9 @@ ${refsSummary || "(no references)"}
 ${relevantChanges.map((c) => `- ${c.description}`).join("\n")}
 
 ## Upstream Context
-- WordPress latest: ${indices.wordpress?.latest ?? "unknown"}
-- Gutenberg latest: ${indices.gutenberg?.latest?.tag ?? "unknown"}
+- WooCommerce latest: ${indices.releases?.latest?.version ?? "unknown"}
+- Requires PHP: ${indices.pluginInfo?.requiresPHP ?? "unknown"}
+- Tested up to WP: ${indices.pluginInfo?.testedUpTo ?? "unknown"}
 
 ## Instructions
 1. Review the current skill content
@@ -259,7 +265,8 @@ ${relevantChanges.map((c) => `- ${c.description}`).join("\n")}
    - Preserves the existing structure and tone
    - Updates version references if needed
    - Adds notes about new features/changes if relevant
-   - Does NOT remove existing content unless it's deprecated
+   - Uses modern WooCommerce 10.x+ patterns only
+   - Does NOT add backwards compatibility code
 
 Respond in JSON format:
 {
@@ -285,7 +292,7 @@ async function callClaude(client, prompt, systemPrompt = null) {
   const response = await client.messages.create({
     model: MODEL,
     max_tokens: 8192,
-    system: systemPrompt ?? "You are a technical writer maintaining WordPress development skills documentation. Always respond with valid JSON.",
+    system: systemPrompt ?? "You are a technical writer maintaining WooCommerce development skills documentation. Always respond with valid JSON.",
     messages,
   });
 
@@ -320,7 +327,7 @@ async function main() {
 
   const client = new Anthropic();
 
-  console.log("=== AI Skill Update Generator ===\n");
+  console.log("=== AI Skill Update Generator (WooCommerce) ===\n");
 
   // 1. Load current state
   console.log("Loading upstream indices...");

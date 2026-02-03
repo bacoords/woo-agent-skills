@@ -1,0 +1,253 @@
+{
+  "source": "https://api.github.com/repos/woocommerce/woocommerce/releases?per_page=30",
+  "fetchedAt": "2026-02-03T18:03:04.364Z",
+  "latest": {
+    "version": "10.4.3",
+    "major": 10,
+    "minor": 4,
+    "tag": "10.4.3",
+    "name": "10.4.3",
+    "publishedAt": "2025-12-22T14:58:54Z",
+    "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.4.3"
+  },
+  "recent": [
+    {
+      "version": "10.4.3",
+      "major": 10,
+      "minor": 4,
+      "tag": "10.4.3",
+      "name": "10.4.3",
+      "publishedAt": "2025-12-22T14:58:54Z",
+      "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.4.3"
+    },
+    {
+      "version": "10.4.2",
+      "major": 10,
+      "minor": 4,
+      "tag": "10.4.2",
+      "name": "10.4.2",
+      "publishedAt": "2025-12-12T16:59:59Z",
+      "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.4.2"
+    },
+    {
+      "version": "10.4.0",
+      "major": 10,
+      "minor": 4,
+      "tag": "10.4.0",
+      "name": "10.4.0",
+      "publishedAt": "2025-12-10T16:24:42Z",
+      "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.4.0"
+    },
+    {
+      "version": "10.3.6",
+      "major": 10,
+      "minor": 3,
+      "tag": "10.3.6",
+      "name": "10.3.6",
+      "publishedAt": "2025-12-02T18:49:45Z",
+      "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.3.6"
+    },
+    {
+      "version": "10.3.5",
+      "major": 10,
+      "minor": 3,
+      "tag": "10.3.5",
+      "name": "10.3.5",
+      "publishedAt": "2025-11-12T18:12:01Z",
+      "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.3.5"
+    },
+    {
+      "version": "10.3.4",
+      "major": 10,
+      "minor": 3,
+      "tag": "10.3.4",
+      "name": "10.3.4",
+      "publishedAt": "2025-10-31T19:43:59Z",
+      "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.3.4"
+    },
+    {
+      "version": "10.3.3",
+      "major": 10,
+      "minor": 3,
+      "tag": "10.3.3",
+      "name": "10.3.3",
+      "publishedAt": "2025-10-24T16:30:02Z",
+      "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.3.3"
+    },
+    {
+      "version": "10.3.2",
+      "major": 10,
+      "minor": 3,
+      "tag": "10.3.2",
+      "name": "10.3.2",
+      "publishedAt": "2025-10-24T16:30:00Z",
+      "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.3.2"
+    },
+    {
+      "version": "10.3.1",
+      "major": 10,
+      "minor": 3,
+      "tag": "10.3.1",
+      "name": "10.3.1",
+      "publishedAt": "2025-10-24T16:29:58Z",
+      "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.3.1"
+    },
+    {
+      "version": "10.3.0",
+      "major": 10,
+      "minor": 3,
+      "tag": "10.3.0",
+      "name": "10.3.0",
+      "publishedAt": "2025-10-22T17:00:52Z",
+      "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.3.0"
+    },
+    {
+      "version": "10.2.2",
+      "major": 10,
+      "minor": 2,
+      "tag": "10.2.2",
+      "name": "10.2.2",
+      "publishedAt": "2025-09-29T15:52:54Z",
+      "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.2.2"
+    },
+    {
+      "version": "10.2.1",
+      "major": 10,
+      "minor": 2,
+      "tag": "10.2.1",
+      "name": "10.2.1",
+      "publishedAt": "2025-09-22T14:00:29Z",
+      "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.2.1"
+    },
+    {
+      "version": "10.2.0",
+      "major": 10,
+      "minor": 2,
+      "tag": "10.2.0",
+      "name": "10.2.0",
+      "publishedAt": "2025-09-17T14:04:16Z",
+      "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.2.0"
+    }
+  ],
+  "byMajorVersion": {
+    "10": [
+      {
+        "version": "10.4.3",
+        "major": 10,
+        "minor": 4,
+        "tag": "10.4.3",
+        "name": "10.4.3",
+        "publishedAt": "2025-12-22T14:58:54Z",
+        "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.4.3"
+      },
+      {
+        "version": "10.4.2",
+        "major": 10,
+        "minor": 4,
+        "tag": "10.4.2",
+        "name": "10.4.2",
+        "publishedAt": "2025-12-12T16:59:59Z",
+        "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.4.2"
+      },
+      {
+        "version": "10.4.0",
+        "major": 10,
+        "minor": 4,
+        "tag": "10.4.0",
+        "name": "10.4.0",
+        "publishedAt": "2025-12-10T16:24:42Z",
+        "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.4.0"
+      },
+      {
+        "version": "10.3.6",
+        "major": 10,
+        "minor": 3,
+        "tag": "10.3.6",
+        "name": "10.3.6",
+        "publishedAt": "2025-12-02T18:49:45Z",
+        "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.3.6"
+      },
+      {
+        "version": "10.3.5",
+        "major": 10,
+        "minor": 3,
+        "tag": "10.3.5",
+        "name": "10.3.5",
+        "publishedAt": "2025-11-12T18:12:01Z",
+        "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.3.5"
+      },
+      {
+        "version": "10.3.4",
+        "major": 10,
+        "minor": 3,
+        "tag": "10.3.4",
+        "name": "10.3.4",
+        "publishedAt": "2025-10-31T19:43:59Z",
+        "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.3.4"
+      },
+      {
+        "version": "10.3.3",
+        "major": 10,
+        "minor": 3,
+        "tag": "10.3.3",
+        "name": "10.3.3",
+        "publishedAt": "2025-10-24T16:30:02Z",
+        "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.3.3"
+      },
+      {
+        "version": "10.3.2",
+        "major": 10,
+        "minor": 3,
+        "tag": "10.3.2",
+        "name": "10.3.2",
+        "publishedAt": "2025-10-24T16:30:00Z",
+        "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.3.2"
+      },
+      {
+        "version": "10.3.1",
+        "major": 10,
+        "minor": 3,
+        "tag": "10.3.1",
+        "name": "10.3.1",
+        "publishedAt": "2025-10-24T16:29:58Z",
+        "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.3.1"
+      },
+      {
+        "version": "10.3.0",
+        "major": 10,
+        "minor": 3,
+        "tag": "10.3.0",
+        "name": "10.3.0",
+        "publishedAt": "2025-10-22T17:00:52Z",
+        "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.3.0"
+      },
+      {
+        "version": "10.2.2",
+        "major": 10,
+        "minor": 2,
+        "tag": "10.2.2",
+        "name": "10.2.2",
+        "publishedAt": "2025-09-29T15:52:54Z",
+        "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.2.2"
+      },
+      {
+        "version": "10.2.1",
+        "major": 10,
+        "minor": 2,
+        "tag": "10.2.1",
+        "name": "10.2.1",
+        "publishedAt": "2025-09-22T14:00:29Z",
+        "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.2.1"
+      },
+      {
+        "version": "10.2.0",
+        "major": 10,
+        "minor": 2,
+        "tag": "10.2.0",
+        "name": "10.2.0",
+        "publishedAt": "2025-09-17T14:04:16Z",
+        "url": "https://github.com/woocommerce/woocommerce/releases/tag/10.2.0"
+      }
+    ]
+  }
+}

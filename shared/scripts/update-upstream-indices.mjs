@@ -2,10 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 
 const SOURCES = {
-  wordpressCoreVersionCheck: "https://api.wordpress.org/core/version-check/1.7/",
-  gutenbergReleases: "https://api.github.com/repos/WordPress/gutenberg/releases?per_page=50",
-  wpGutenbergMapDoc:
-    "https://developer.wordpress.org/block-editor/contributors/versions-in-wordpress/",
+  woocommerceReleases: "https://api.github.com/repos/woocommerce/woocommerce/releases?per_page=30",
+  woocommercePluginInfo: "https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&slug=woocommerce",
 };
 
 function mkdirp(dirPath) {
@@ -17,39 +15,15 @@ function writeJson(filePath, value) {
   fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
 }
 
-function stripTags(html) {
-  return html
-    .replace(/<script[\s\S]*?<\/script>/gi, "")
-    .replace(/<style[\s\S]*?<\/style>/gi, "")
-    .replace(/<[^>]+>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function decodeHtml(text) {
-  return text
-    .replace(/&nbsp;/g, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, "\"")
-    .replace(/&#39;/g, "'")
-    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)));
-}
-
-async function fetchText(url) {
+async function fetchJson(url) {
   const res = await fetch(url, {
     headers: {
-      "user-agent": "wp-agent-skills-upstream-sync/0.1",
-      accept: "text/html,application/json",
+      "user-agent": "woo-agent-skills-upstream-sync/0.1",
+      accept: "application/json",
     },
   });
   if (!res.ok) throw new Error(`Fetch failed ${res.status} for ${url}`);
-  return await res.text();
-}
-
-async function fetchJson(url) {
-  const text = await fetchText(url);
+  const text = await res.text();
   try {
     return JSON.parse(text);
   } catch {
@@ -57,80 +31,68 @@ async function fetchJson(url) {
   }
 }
 
-function parseWpGutenbergMapFromHtml(html) {
-  // Best-effort HTML table parsing without dependencies:
-  // 1) find the first <table> that contains "WordPress Version" and "Gutenberg Versions"
-  // 2) extract rows, then extract cells
-  const tables = [...html.matchAll(/<table[\s\S]*?<\/table>/gi)].map((m) => m[0]);
-  const target = tables.find((t) => /WordPress\s*Version/i.test(t) && /Gutenberg\s*Versions/i.test(t));
-  if (!target) return { rows: [], note: "table-not-found" };
+function normalizeWooCommerceReleases(payload) {
+  const releases = Array.isArray(payload) ? payload : [];
 
-  const rowHtml = [...target.matchAll(/<tr[\s\S]*?<\/tr>/gi)].map((m) => m[0]);
-  const rows = [];
+  // Filter to stable releases only (no RCs, betas, alphas)
+  const stable = releases
+    .filter((r) => {
+      if (!r || r.draft || r.prerelease) return false;
+      if (typeof r.tag_name !== "string") return false;
+      // Skip release candidates, betas, alphas
+      if (/-(rc|beta|alpha|dev)/i.test(r.tag_name)) return false;
+      return true;
+    })
+    .map((r) => {
+      // Extract version number from tag (e.g., "9.5.1" from "9.5.1")
+      const version = r.tag_name.replace(/^v/, "");
+      const [major, minor] = version.split(".").map(Number);
 
-  for (const r of rowHtml) {
-    const cellHtml = [...r.matchAll(/<(td|th)[^>]*>([\s\S]*?)<\/\1>/gi)].map((m) => m[2]);
-    if (cellHtml.length < 2) continue;
+      return {
+        version,
+        major,
+        minor,
+        tag: r.tag_name,
+        name: typeof r.name === "string" ? r.name : null,
+        publishedAt: typeof r.published_at === "string" ? r.published_at : null,
+        url: typeof r.html_url === "string" ? r.html_url : null,
+      };
+    })
+    // Sort by version descending
+    .sort((a, b) => {
+      if (a.major !== b.major) return b.major - a.major;
+      if (a.minor !== b.minor) return b.minor - a.minor;
+      return 0;
+    });
 
-    const cells = cellHtml.map((c) => decodeHtml(stripTags(c)));
-    const wp = cells[0];
-    const gb = cells[1];
-
-    if (/WordPress\s*Version/i.test(wp) || /Gutenberg\s*Versions/i.test(gb)) continue;
-    if (!/^\d+\.\d+/.test(wp)) continue;
-
-    rows.push({ wordpress: wp, gutenberg: gb });
+  // Group by major version for easy reference
+  const byMajor = {};
+  for (const release of stable) {
+    if (!byMajor[release.major]) {
+      byMajor[release.major] = [];
+    }
+    byMajor[release.major].push(release);
   }
 
-  return { rows, note: null };
-}
-
-function normalizeWpVersionCheckPayload(payload) {
-  // https://api.wordpress.org/core/version-check/1.7/ returns something like:
-  // { offers: [...], translations: [...] }
-  const offers = Array.isArray(payload?.offers) ? payload.offers : [];
-
-  const candidates = offers
-    .map((o) => ({
-      version: typeof o?.version === "string" ? o.version : null,
-      current: typeof o?.current === "string" ? o.current : null,
-      download: typeof o?.download === "string" ? o.download : null,
-      phpVersion: typeof o?.php_version === "string" ? o.php_version : null,
-      mysqlVersion: typeof o?.mysql_version === "string" ? o.mysql_version : null,
-      response: typeof o?.response === "string" ? o.response : null,
-      locale: typeof o?.locale === "string" ? o.locale : null,
-    }))
-    .filter((o) => o.version || o.current);
-
-  // Keep a small, stable subset; prioritize "upgrade" offers.
-  const byVersion = new Map();
-  for (const o of candidates) {
-    const v = o.version ?? o.current;
-    if (!v) continue;
-    if (!byVersion.has(v)) byVersion.set(v, o);
-  }
-
-  const versions = [...byVersion.keys()].sort((a, b) => (a < b ? 1 : a > b ? -1 : 0));
   return {
-    latest: versions[0] ?? null,
-    recent: versions.slice(0, 20),
-    offers: versions.slice(0, 20).map((v) => byVersion.get(v)),
+    latest: stable[0] ?? null,
+    recent: stable.slice(0, 20),
+    byMajorVersion: byMajor,
   };
 }
 
-function normalizeGutenbergReleases(payload) {
-  const releases = Array.isArray(payload) ? payload : [];
-  const stable = releases
-    .filter((r) => r && !r.draft && !r.prerelease && typeof r.tag_name === "string")
-    .map((r) => ({
-      tag: r.tag_name,
-      name: typeof r.name === "string" ? r.name : null,
-      publishedAt: typeof r.published_at === "string" ? r.published_at : null,
-      url: typeof r.html_url === "string" ? r.html_url : null,
-    }));
+function normalizePluginInfo(payload) {
+  if (!payload || typeof payload !== "object") {
+    return { error: "Invalid plugin info response" };
+  }
+
   return {
-    latest: stable[0] ?? null,
-    recent: stable.slice(0, 30),
+    version: payload.version ?? null,
+    testedUpTo: payload.tested ?? null,
+    requiresWP: payload.requires ?? null,
+    requiresPHP: payload.requires_php ?? null,
+    lastUpdated: payload.last_updated ?? null,
+    activeInstalls: payload.active_installs ?? null,
   };
 }
 
@@ -138,33 +100,30 @@ async function main() {
   const repoRoot = process.cwd();
   const outDir = path.join(repoRoot, "shared", "references");
 
-  const [wpVersionPayload, gbReleasesPayload, mapHtml] = await Promise.all([
-    fetchJson(SOURCES.wordpressCoreVersionCheck),
-    fetchJson(SOURCES.gutenbergReleases),
-    fetchText(SOURCES.wpGutenbergMapDoc),
+  const [releasesPayload, pluginInfoPayload] = await Promise.all([
+    fetchJson(SOURCES.woocommerceReleases),
+    fetchJson(SOURCES.woocommercePluginInfo),
   ]);
 
-  const wordpress = normalizeWpVersionCheckPayload(wpVersionPayload);
-  const gutenberg = normalizeGutenbergReleases(gbReleasesPayload);
-  const map = parseWpGutenbergMapFromHtml(mapHtml);
+  const releases = normalizeWooCommerceReleases(releasesPayload);
+  const pluginInfo = normalizePluginInfo(pluginInfoPayload);
 
-  writeJson(path.join(outDir, "wordpress-core-versions.json"), {
-    source: SOURCES.wordpressCoreVersionCheck,
-    ...wordpress,
+  writeJson(path.join(outDir, "woocommerce-releases.json"), {
+    source: SOURCES.woocommerceReleases,
+    fetchedAt: new Date().toISOString(),
+    ...releases,
   });
 
-  writeJson(path.join(outDir, "gutenberg-releases.json"), {
-    source: SOURCES.gutenbergReleases,
-    ...gutenberg,
-  });
-
-  writeJson(path.join(outDir, "wp-gutenberg-version-map.json"), {
-    source: SOURCES.wpGutenbergMapDoc,
-    note: map.note,
-    rows: map.rows,
+  writeJson(path.join(outDir, "woocommerce-plugin-info.json"), {
+    source: SOURCES.woocommercePluginInfo,
+    fetchedAt: new Date().toISOString(),
+    ...pluginInfo,
   });
 
   process.stdout.write("OK: updated shared/references/* upstream indices\n");
+  process.stdout.write(`  Latest WooCommerce: ${releases.latest?.version ?? "unknown"}\n`);
+  process.stdout.write(`  Requires PHP: ${pluginInfo.requiresPHP ?? "unknown"}\n`);
+  process.stdout.write(`  Tested up to WP: ${pluginInfo.testedUpTo ?? "unknown"}\n`);
 }
 
 main().catch((err) => {

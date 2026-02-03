@@ -1,18 +1,21 @@
 # Compatibility policy
 
-This repo is an authoring workspace for WordPress-focused Agent Skills.
+This repo is an authoring workspace for WooCommerce-focused Agent Skills.
 
 ## Compatibility contract (v1)
 
 Skills in this repo target:
 
-- WordPress core **6.9+**
-- PHP **7.2.24+** (minimum supported by WordPress 6.9)
+- WooCommerce **10.x+**
+- WordPress **6.7+**
+- PHP **8.0+**
 
 ## Authoring rules
 
 Skills should:
 
-- Prefer stable WordPress APIs and best practices.
+- Use modern WooCommerce APIs and patterns exclusively.
+- Assume HPOS is enabled (it's the default in WooCommerce 9+).
+- Leverage PHP 8.0+ features (constructor promotion, named arguments, match expressions).
 - Prefer detection + guardrails (triage) over hard-coded assumptions.
-- If a task requires behavior that differs across core versions, ask for a target version (but default guidance should assume WP 6.9+).
+- Default guidance assumes WooCommerce 10.x+ — don't add backwards compatibility for older versions.

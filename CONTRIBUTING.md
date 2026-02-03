@@ -1,12 +1,12 @@
 # Contributing to Agent Skills
 
-We welcome contributions! This project is a great opportunity to share your WordPress expertise with the community in a unique way.
+We welcome contributions! This project is a great opportunity to share your WooCommerce expertise with the community in a unique way.
 
 ## Why Contribute Here?
 
-**You don't need to be a coding wizard.** Unlike typical open source projects, Agent Skills is primarily about capturing *knowledge* and *best practices* in a structured format. If you understand WordPress deeply—whether that's block development, performance optimization, plugin security, or any other domain—you can make a meaningful contribution.
+**You don't need to be a coding wizard.** Unlike typical open source projects, Agent Skills is primarily about capturing *knowledge* and *best practices* in a structured format. If you understand WooCommerce deeply—whether that's extension development, payment gateways, HPOS compatibility, or any other domain—you can make a meaningful contribution.
 
-Most of our skills are written in Markdown. The "code" is mostly procedural checklists, decision trees, and reference documentation. If you can explain a WordPress concept clearly, you can contribute here.
+Most of our skills are written in Markdown. The "code" is mostly procedural checklists, decision trees, and reference documentation. If you can explain a WooCommerce concept clearly, you can contribute here.
 
 ## Ways to Contribute
 
@@ -14,14 +14,14 @@ Most of our skills are written in Markdown. The "code" is mostly procedural chec
 
 The easiest way to start:
 
-- **Fix outdated information** — WordPress evolves quickly. If you spot something that's changed, open a PR.
+- **Fix outdated information** — WooCommerce evolves quickly. If you spot something that's changed, open a PR.
 - **Add missing edge cases** — Did you hit a gotcha that isn't documented? Add it to the "Failure modes" section.
 - **Clarify procedures** — If a step confused you, it'll confuse others. Make it clearer.
 - **Expand references** — Add deeper documentation on specific topics.
 
 ### 2. Create New Skills
 
-Have expertise in a WordPress area we don't cover yet? Consider adding a new skill.
+Have expertise in a WooCommerce area we don't cover yet? Consider adding a new skill.
 
 Before starting:
 1. Check [existing skills](skills/) to avoid overlap
@@ -87,8 +87,9 @@ See any existing skill for examples.
 
 ### Keep It Current
 
-- Target WordPress 6.9+ and PHP 7.2.24+
-- Avoid legacy patterns (Classic themes, pre-Gutenberg APIs)
+- Target WooCommerce 10.x+ (WordPress 6.7+, PHP 8.0+)
+- Use modern patterns only — HPOS is assumed, PHP 8.0+ features encouraged
+- Avoid legacy/backwards-compatible code — don't support older WooCommerce versions
 - Update compatibility frontmatter when requirements change
 
 ### Keep It Testable
@@ -105,7 +106,7 @@ See any existing skill for examples.
 ## Submitting Changes
 
 1. Fork the repo
-2. Create a branch (`git checkout -b improve-block-dev-skill`)
+2. Create a branch (`git checkout -b improve-payment-gateway-skill`)
 3. Make your changes
 4. Run validation: `node eval/harness/run.mjs`
 5. Commit with a clear message
@@ -119,4 +120,4 @@ Open an issue or start a discussion. We're happy to help you get started.
 
 ---
 
-*Your WordPress knowledge can help thousands of developers get better AI assistance. Thank you for contributing!*
+*Your WooCommerce knowledge can help thousands of developers get better AI assistance. Thank you for contributing!*

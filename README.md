@@ -1,36 +1,32 @@
-# Agent Skills for WordPress
+# Agent Skills for WooCommerce
 
-**Teach AI coding assistants how to build WordPress the right way.**
+**Teach AI coding assistants how to build WooCommerce extensions the right way.**
 
-Agent Skills are portable bundles of instructions, checklists, and scripts that help AI assistants (Claude, Copilot, Codex, Cursor, etc.) understand WordPress development patterns, avoid common mistakes, and follow best practices.
+Agent Skills are portable bundles of instructions, checklists, and scripts that help AI assistants (Claude, Copilot, Codex, Cursor, etc.) understand WooCommerce development patterns, avoid common mistakes, and follow best practices.
 
 ## Why Agent Skills?
 
 AI coding assistants are powerful, but they often:
-- Generate outdated WordPress patterns (pre-Gutenberg, pre-block themes)
-- Miss critical security considerations in plugin development
-- Skip proper block deprecations, causing "Invalid block" errors
+- Generate outdated WooCommerce patterns (pre-HPOS, deprecated hooks)
+- Miss critical security considerations in payment gateway development
+- Skip proper HPOS compatibility declarations
 - Ignore existing tooling in your repo
 
-Agent Skills solve this by giving AI assistants **expert-level WordPress knowledge** in a format they can actually use.
+Agent Skills solve this by giving AI assistants **expert-level WooCommerce knowledge** in a format they can actually use.
 
 ## Available Skills
 
 | Skill | What it teaches |
 |-------|-----------------|
-| **wordpress-router** | Classifies WordPress repos and routes to the right workflow |
-| **wp-project-triage** | Detects project type, tooling, and versions automatically |
-| **wp-block-development** | Gutenberg blocks: `block.json`, attributes, rendering, deprecations |
-| **wp-block-themes** | Block themes: `theme.json`, templates, patterns, style variations |
-| **wp-plugin-development** | Plugin architecture, hooks, settings API, security |
-| **wp-rest-api** | REST API routes/endpoints, schema, auth, and response shaping |
-| **wp-interactivity-api** | Frontend interactivity with `data-wp-*` directives and stores |
-| **wp-abilities-api** | Capability-based permissions and REST API authentication |
-| **wp-wpcli-and-ops** | WP-CLI commands, automation, multisite, search-replace |
-| **wp-performance** | Profiling, caching, database optimization, Server-Timing |
-| **wp-phpstan** | PHPStan static analysis for WordPress projects (config, baselines, WP-specific typing) |
-| **wp-playground** | WordPress Playground for instant local environments |
-| **wpds** | WordPress Design System |
+| **woo-project-triage** | Detects WooCommerce project type, version, HPOS mode, and active features |
+| **woo-extension-architecture** | Extension structure, lifecycle hooks, settings integration, HPOS compatibility |
+| **woo-product-catalog** | Product CRUD, variable products, attributes, custom product types, inventory |
+| **woo-orders-fulfillment** | Order CRUD (HPOS-aware), custom statuses, refunds, order queries |
+| **woo-payment-gateways** | Payment gateway development, tokenization, subscriptions, PCI patterns |
+| **woo-shipping-methods** | Shipping method development, rate calculation, zones, package handling |
+| **woo-rest-api** | WooCommerce REST API v3, extending endpoints, webhooks, API authentication |
+| **woo-store-api** | Store API for headless/block checkout, cart operations, checkout flow |
+| **woo-cli** | WooCommerce CLI commands (`wp wc`), bulk operations, data import/export |
 
 ## Quick Start
 
@@ -48,7 +44,7 @@ node shared/scripts/skillpack-build.mjs --clean
 node shared/scripts/skillpack-install.mjs --global
 
 # Or install specific skills only
-node shared/scripts/skillpack-install.mjs --global --skills=wp-playground,wp-block-development
+node shared/scripts/skillpack-install.mjs --global --skills=woo-project-triage,woo-extension-architecture
 ```
 
 This installs skills to `~/.claude/skills/` where Claude Code will automatically discover them.
@@ -63,8 +59,8 @@ cd agent-skills
 # Build the distribution
 node shared/scripts/skillpack-build.mjs --clean
 
-# Install into your WordPress project
-node shared/scripts/skillpack-install.mjs --dest=../your-wp-project --targets=codex,vscode,claude
+# Install into your WooCommerce project
+node shared/scripts/skillpack-install.mjs --dest=../your-woo-project --targets=codex,vscode,claude
 ```
 
 This copies skills into:
@@ -82,7 +78,7 @@ node shared/scripts/skillpack-install.mjs --list
 node shared/scripts/skillpack-install.mjs --global --dry-run
 
 # Install specific skills to a project
-node shared/scripts/skillpack-install.mjs --dest=../my-repo --targets=claude --skills=wp-wpcli-and-ops
+node shared/scripts/skillpack-install.mjs --dest=../my-repo --targets=claude --skills=woo-payment-gateways
 ```
 
 ### Manual installation
@@ -94,26 +90,26 @@ Copy any skill folder from `skills/` into your project's instructions directory 
 Each skill contains:
 
 ```
-skills/wp-block-development/
+skills/woo-extension-architecture/
 ├── SKILL.md              # Main instructions (when to use, procedure, verification)
 ├── references/           # Deep-dive docs on specific topics
-│   ├── block-json.md
-│   ├── deprecations.md
+│   ├── hpos-compatibility.md
+│   ├── lifecycle-hooks.md
 │   └── ...
 └── scripts/              # Deterministic helpers (detection, validation)
-    └── list_blocks.mjs
+    └── detect_extension.mjs
 ```
 
-When you ask your AI assistant to work on WordPress code, it reads these skills and follows the documented procedures rather than guessing.
+When you ask your AI assistant to work on WooCommerce code, it reads these skills and follows the documented procedures rather than guessing.
 
 ## Compatibility
 
-- **WordPress 6.9+** (PHP 7.2.24+)
+- **WooCommerce 10.x+** (WordPress 6.7+, PHP 8.0+)
 - Works with any AI assistant that supports project-level instructions
 
 ## Contributing
 
-**We welcome contributions!** This project is a great way to share your WordPress expertise—you don't need to be a coding wizard. Most skills are written in Markdown, focusing on clear procedures and best practices.
+**We welcome contributions!** This project is a great way to share your WooCommerce expertise—you don't need to be a coding wizard. Most skills are written in Markdown, focusing on clear procedures and best practices.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to get started.
 

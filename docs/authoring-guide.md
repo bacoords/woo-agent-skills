@@ -5,21 +5,21 @@ This repo is built for **AI-assisted authoring** with **deterministic guardrails
 ## Golden rules
 
 - Keep `SKILL.md` short and procedural; push depth into `references/` and scripts.
-- Prefer deterministic scripts for anything the agent would otherwise “guess” (repo detection, version checks, lint/test command discovery).
-- Don’t add a new skill without at least one scenario in `eval/scenarios/`.
+- Prefer deterministic scripts for anything the agent would otherwise "guess" (repo detection, version checks, lint/test command discovery).
+- Don't add a new skill without at least one scenario in `eval/scenarios/`.
 - Keep file references 1 hop from `SKILL.md` (avoid deep chains).
 - Include a `compatibility:` frontmatter line matching `docs/compatibility-policy.md`.
 
 ## Workflow: draft → harden → ship
 
-1. **Route first**
-   - Start from `skills/wordpress-router/SKILL.md` to classify the repo and pick the domain.
+1. **Triage first**
+   - Start from `skills/woo-project-triage/SKILL.md` to detect WooCommerce version, HPOS mode, and active features.
 2. **Collect inputs**
-   - What repo type(s) does triage detect?
-   - What WP/PHP/Node versions are targeted (if known)?
-   - What tooling exists (Composer, @wordpress/scripts, PHPUnit, Playwright, wp-env)?
+   - What extension type(s) does triage detect?
+   - What WooCommerce/WP/PHP versions are targeted (if known)?
+   - What tooling exists (Composer, npm, PHPUnit, Playwright)?
 3. **Draft the skill (AI-assisted)**
-   - Write `SKILL.md` as a checklist/procedure with explicit “Verification” and “Failure modes”.
+   - Write `SKILL.md` as a checklist/procedure with explicit "Verification" and "Failure modes".
    - Keep examples short; link to topic references when needed.
 4. **Add deterministic helpers**
    - If the skill depends on detection (versions, project layout, build system), add a script under `scripts/`.
@@ -27,7 +27,6 @@ This repo is built for **AI-assisted authoring** with **deterministic guardrails
    - Add at least 1 prompt-style scenario under `eval/scenarios/` describing expected behavior.
 6. **Validate**
    - Run `node eval/harness/run.mjs`.
-   - Optionally validate frontmatter using `skills-ref validate` (see `docs/upstream-sync.md` for CI guidance).
 
 ## Scaffolding a new skill
 
@@ -35,12 +34,12 @@ Use the scaffold script to create a minimal, spec-compliant starting point:
 
 - `node shared/scripts/scaffold-skill.mjs <skill-name> "<description>"`
 
-## “Skill generation” prompt template (recommended)
+## "Skill generation" prompt template (recommended)
 
 When using an LLM to draft a skill, provide:
 
 - The repo triage JSON output
-- The user’s task statement(s)
+- The user's task statement(s)
 - Any version constraints and non-goals
 - The required sections: When to use, Inputs required, Procedure, Verification, Failure modes, Escalation
 
