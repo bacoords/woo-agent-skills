@@ -1,10 +1,10 @@
 ---
-name: woo-orders-fulfillment
-description: Order CRUD (HPOS-aware), custom statuses, status transitions, refunds, order meta, and order queries.
+name: woo-theming
+description: WooCommerce theming and styling including template overrides, custom CSS, block styles, and theme integration patterns.
 compatibility: WooCommerce 10.x+ (WP 6.7+, PHP 8.0+). Filesystem-based agent with bash + node.
 ---
 
-# woo-orders-fulfillment
+# woo-theming
 
 ## When to use
 

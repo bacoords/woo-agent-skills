@@ -19,14 +19,15 @@ Agent Skills solve this by giving AI assistants **expert-level WooCommerce knowl
 | Skill | What it teaches |
 |-------|-----------------|
 | **woo-project-triage** | Detects WooCommerce project type, version, HPOS mode, and active features |
-| **woo-extension-architecture** | Extension structure, lifecycle hooks, settings integration, HPOS compatibility |
-| **woo-product-catalog** | Product CRUD, variable products, attributes, custom product types, inventory |
-| **woo-orders-fulfillment** | Order CRUD (HPOS-aware), custom statuses, refunds, order queries |
-| **woo-payment-gateways** | Payment gateway development, tokenization, subscriptions, PCI patterns |
-| **woo-shipping-methods** | Shipping method development, rate calculation, zones, package handling |
-| **woo-rest-api** | WooCommerce REST API v3, extending endpoints, webhooks, API authentication |
-| **woo-store-api** | Store API for headless/block checkout, cart operations, checkout flow |
+| **woo-extension-patterns** | Extension structure, lifecycle hooks, settings integration, HPOS compatibility |
+| **woo-settings** | Adding settings pages and options using WC Settings API |
+| **woo-cart-checkout** | Modifying cart and checkout behavior, custom fields, order processing |
+| **woo-theming** | Template overrides, custom CSS, block styles, theme integration |
 | **woo-cli** | WooCommerce CLI commands (`wp wc`), bulk operations, data import/export |
+| **woo-logging-debugging** | WC Logger usage, log reading, Query Monitor, debug mode, status reports |
+| **woo-action-scheduler** | Action Scheduler CLI, viewing/managing queued actions, debugging failed jobs |
+| **woo-import-export** | Built-in CSV importer/exporter, bulk CLI operations, data transformation |
+| **woo-blocks-toolkit** | wp-scripts for block development, checkout/cart block extension points |
 
 ## Quick Start
 
@@ -44,7 +45,7 @@ node shared/scripts/skillpack-build.mjs --clean
 node shared/scripts/skillpack-install.mjs --global
 
 # Or install specific skills only
-node shared/scripts/skillpack-install.mjs --global --skills=woo-project-triage,woo-extension-architecture
+node shared/scripts/skillpack-install.mjs --global --skills=woo-project-triage,woo-extension-patterns
 ```
 
 This installs skills to `~/.claude/skills/` where Claude Code will automatically discover them.
@@ -78,7 +79,7 @@ node shared/scripts/skillpack-install.mjs --list
 node shared/scripts/skillpack-install.mjs --global --dry-run
 
 # Install specific skills to a project
-node shared/scripts/skillpack-install.mjs --dest=../my-repo --targets=claude --skills=woo-payment-gateways
+node shared/scripts/skillpack-install.mjs --dest=../my-repo --targets=claude --skills=woo-cli
 ```
 
 ### Manual installation
@@ -90,7 +91,7 @@ Copy any skill folder from `skills/` into your project's instructions directory 
 Each skill contains:
 
 ```
-skills/woo-extension-architecture/
+skills/woo-extension-patterns/
 ├── SKILL.md              # Main instructions (when to use, procedure, verification)
 ├── references/           # Deep-dive docs on specific topics
 │   ├── hpos-compatibility.md

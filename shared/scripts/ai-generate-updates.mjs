@@ -115,9 +115,8 @@ function detectChanges(lastState, currentState) {
       riskLevel: "high",
       affectedSkills: [
         "woo-project-triage",
-        "woo-extension-architecture",
-        "woo-orders-fulfillment",
-        "woo-payment-gateways",
+        "woo-extension-patterns",
+        "woo-cli",
       ],
     });
   } else if (last.wooLatest !== current.wooLatest) {
@@ -138,7 +137,7 @@ function detectChanges(lastState, currentState) {
       type: "php-requirement-change",
       description: `PHP requirement changed: ${last.requiresPHP} → ${current.requiresPHP}`,
       riskLevel: "medium",
-      affectedSkills: ["woo-extension-architecture"],
+      affectedSkills: ["woo-extension-patterns"],
     });
   }
 
