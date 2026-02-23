@@ -369,8 +369,8 @@ wp eval "print_r(my_extension_get_settings());"
 
 ## Escalation
 
-- WC Settings API: https://developer.woocommerce.com/docs/settings-api/
-- Adding sections to tabs: https://developer.woocommerce.com/docs/extensions/settings-and-config/adding-a-section-to-a-settings-tab/
-- Creating custom settings: https://developer.woocommerce.com/docs/extensions/settings-and-config/implementing-settings/
+- WC Settings API: https://developer.woocommerce.com/docs/settings-api.md
+- Adding sections to tabs: https://developer.woocommerce.com/docs/extensions/settings-and-config/adding-a-section-to-a-settings-tab.md
+- Creating custom settings: https://developer.woocommerce.com/docs/extensions/settings-and-config/implementing-settings.md
 - Settings and config overview: https://developer.woocommerce.com/docs/category/settings-and-config/
-- Working with admin pages: https://developer.woocommerce.com/docs/extensions/settings-and-config/working-with-woocommerce-admin-pages/
+- Working with admin pages: https://developer.woocommerce.com/docs/extensions/settings-and-config/working-with-woocommerce-admin-pages.md

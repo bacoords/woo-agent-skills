@@ -511,9 +511,9 @@ wp eval "var_dump(is_woocommerce());" # Run on a product page
 
 ## Escalation
 
-- Template structure & overrides: https://developer.woocommerce.com/docs/theming/theme-development/template-structure/
-- Classic theme handbook: https://developer.woocommerce.com/docs/theming/theme-development/classic-theme-developer-handbook/
-- Block theme development: https://developer.woocommerce.com/docs/theming/block-theme-development/theming-woo-blocks/
-- Cart and checkout theming: https://developer.woocommerce.com/docs/theming/block-theme-development/cart-and-checkout/
-- Child theme setup: https://developer.woocommerce.com/docs/theming/theme-development/set-up-a-child-theme
-- Fixing outdated templates: https://developer.woocommerce.com/docs/theming/theme-development/fixing-outdated-woocommerce-templates/
+- Template structure & overrides: https://developer.woocommerce.com/docs/theming/theme-development/template-structure.md
+- Classic theme handbook: https://developer.woocommerce.com/docs/theming/theme-development/classic-theme-developer-handbook.md
+- Block theme development: https://developer.woocommerce.com/docs/theming/block-theme-development/theming-woo-blocks.md
+- Cart and checkout theming: https://developer.woocommerce.com/docs/theming/block-theme-development/cart-and-checkout.md
+- Child theme setup: https://developer.woocommerce.com/docs/theming/theme-development/set-up-a-child-theme.md
+- Fixing outdated templates: https://developer.woocommerce.com/docs/theming/theme-development/fixing-outdated-woocommerce-templates.md

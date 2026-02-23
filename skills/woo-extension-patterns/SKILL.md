@@ -110,7 +110,7 @@ if ( OrderUtil::is_order( $post_id ) ) {
 }
 ```
 
-See: [HPOS Extension Recipe Book](https://developer.woocommerce.com/docs/features/high-performance-order-storage/recipe-book/)
+See: [HPOS Extension Recipe Book](https://developer.woocommerce.com/docs/features/high-performance-order-storage/recipe-book.md)
 
 ### 3) Check Block Checkout compatibility
 
@@ -147,7 +147,7 @@ if ( class_exists( CartCheckoutUtils::class ) && CartCheckoutUtils::is_checkout_
 }
 ```
 
-See: [Cart and Checkout Extensibility](https://developer.woocommerce.com/docs/block-development/extensible-blocks/cart-and-checkout-blocks/)
+See: [Cart and Checkout Extensibility](https://developer.woocommerce.com/docs/block-development/extensible-blocks/cart-and-checkout-blocks.md)
 
 ### 4) Verify lifecycle hooks
 
@@ -194,7 +194,7 @@ add_filter( 'woocommerce_get_settings_products', function( $settings, $section )
 }, 10, 2 );
 ```
 
-See: [Settings API](https://developer.woocommerce.com/docs/settings-api/) and [Adding Sections](https://developer.woocommerce.com/docs/extensions/settings-and-config/adding-a-section-to-a-settings-tab/)
+See: [Settings API](https://developer.woocommerce.com/docs/settings-api.md) and [Adding Sections](https://developer.woocommerce.com/docs/extensions/settings-and-config/adding-a-section-to-a-settings-tab.md)
 
 ## Verification
 
@@ -230,9 +230,9 @@ grep -r "class_exists.*WooCommerce" --include="*.php" .
 
 ## Escalation
 
-- Extension development guide: https://developer.woocommerce.com/docs/getting-started/
-- HPOS recipe book: https://developer.woocommerce.com/docs/features/high-performance-order-storage/recipe-book/
-- HPOS overview: https://developer.woocommerce.com/docs/features/high-performance-order-storage/
-- Compatibility declarations: https://developer.woocommerce.com/docs/compatibility-and-interoperability-for-woocommerce-extensions/
-- Settings API: https://developer.woocommerce.com/docs/settings-api/
-- Block Checkout integration: https://developer.woocommerce.com/docs/block-development/extensible-blocks/cart-and-checkout-blocks/
+- Extension development guide: https://developer.woocommerce.com/docs/getting-started.md
+- HPOS recipe book: https://developer.woocommerce.com/docs/features/high-performance-order-storage/recipe-book.md
+- HPOS overview: https://developer.woocommerce.com/docs/features/high-performance-order-storage.md
+- Compatibility declarations: https://developer.woocommerce.com/docs/compatibility-and-interoperability-for-woocommerce-extensions.md
+- Settings API: https://developer.woocommerce.com/docs/settings-api.md
+- Block Checkout integration: https://developer.woocommerce.com/docs/block-development/extensible-blocks/cart-and-checkout-blocks.md

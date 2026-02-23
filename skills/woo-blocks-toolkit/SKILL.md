@@ -421,9 +421,9 @@ wp eval "global \$wp_scripts; print_r(\$wp_scripts->registered['my-checkout-exte
 
 ## Escalation
 
-- Cart and Checkout extensibility: https://developer.woocommerce.com/docs/block-development/extensible-blocks/cart-and-checkout-blocks/
-- Extensibility overview: https://developer.woocommerce.com/docs/block-development/getting-started/extensibility-overview/
-- IntegrationInterface (scripts/styles): https://developer.woocommerce.com/docs/block-development/reference/integration-interface/
-- Additional checkout fields: https://developer.woocommerce.com/docs/block-development/extensible-blocks/cart-and-checkout-blocks/additional-checkout-fields/
+- Cart and Checkout extensibility: https://developer.woocommerce.com/docs/block-development/extensible-blocks/cart-and-checkout-blocks.md
+- Extensibility overview: https://developer.woocommerce.com/docs/block-development/getting-started/extensibility-overview.md
+- IntegrationInterface (scripts/styles): https://developer.woocommerce.com/docs/block-development/reference/integration-interface.md
+- Additional checkout fields: https://developer.woocommerce.com/docs/block-development/extensible-blocks/cart-and-checkout-blocks/additional-checkout-fields.md
 - wp-scripts: https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/
 - Tutorial - Extending Checkout: https://developer.woocommerce.com/2023/08/07/extending-the-woocommerce-checkout-block-to-add-custom-shipping-options/

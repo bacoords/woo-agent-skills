@@ -250,17 +250,17 @@ add_filter( 'woocommerce_checkout_fields', function( $fields ) {
 
 ```php
 <?php
-add_action( 'woocommerce_blocks_loaded', function() {
+// Use woocommerce_init hook for field registration.
+add_action( 'woocommerce_init', function() {
     woocommerce_register_additional_checkout_field(
         array(
-            'id'            => 'my-extension/company-id',
-            'label'         => __( 'Company ID', 'my-extension' ),
-            'location'      => 'address', // 'contact', 'address', or 'order'
-            'type'          => 'text',
-            'required'      => false,
-            'attributes'    => array(
-                'maxLength'   => 20,
-                'placeholder' => __( 'Enter ID', 'my-extension' ),
+            'id'         => 'my-extension/company-id',
+            'label'      => __( 'Company ID', 'my-extension' ),
+            'location'   => 'address', // 'contact', 'address', or 'order'
+            'type'       => 'text',
+            'required'   => false,
+            'attributes' => array(
+                'maxLength' => 20,
             ),
         )
     );
@@ -292,25 +292,179 @@ add_action( 'woocommerce_blocks_loaded', function() {
 } );
 ```
 
-### Validate Block Checkout Field
+### Conditional Checkout Fields (WooCommerce 9.9+)
+
+Use `hidden` and `required` parameters with JSON Schema conditions to show/hide fields dynamically.
+
+**Show field only when specific product is in cart:**
 
 ```php
 <?php
-add_action( 'woocommerce_blocks_validate_location_address_fields', function( $errors, $fields, $group ) {
-    $field_id = 'my-extension/company-id';
+add_action( 'woocommerce_init', function() {
+    woocommerce_register_additional_checkout_field(
+        array(
+            'id'       => 'my-extension/subscription-birthday',
+            'label'    => __( 'Your Birthday', 'my-extension' ),
+            'location' => 'order',
+            'type'     => 'text',
 
-    if ( ! empty( $fields[ $field_id ] ) ) {
-        $value = $fields[ $field_id ];
-        if ( strlen( $value ) < 5 ) {
-            $errors->add( 'invalid_company_id', __( 'Company ID must be at least 5 characters.', 'my-extension' ) );
+            // Hidden when product ID 74 is NOT in cart.
+            'hidden'   => array(
+                'cart' => array(
+                    'properties' => array(
+                        'items' => array(
+                            'not' => array(
+                                'contains' => array(
+                                    'enum' => array( 74 ),
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+
+            // Required only when product ID 74 IS in cart.
+            'required' => array(
+                'cart' => array(
+                    'properties' => array(
+                        'items' => array(
+                            'contains' => array(
+                                'enum' => array( 74 ),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        )
+    );
+} );
+```
+
+**Show field only when cart needs shipping:**
+
+```php
+<?php
+add_action( 'woocommerce_init', function() {
+    woocommerce_register_additional_checkout_field(
+        array(
+            'id'       => 'my-extension/delivery-instructions',
+            'label'    => __( 'Delivery Instructions', 'my-extension' ),
+            'location' => 'order',
+            'type'     => 'text',
+
+            // Only show for physical products (hide when no shipping needed).
+            'hidden'   => array(
+                'cart' => array(
+                    'properties' => array(
+                        'needs_shipping' => array(
+                            'const' => false,
+                        ),
+                    ),
+                ),
+            ),
+        )
+    );
+} );
+```
+
+**Show field based on cart total:**
+
+```php
+<?php
+add_action( 'woocommerce_init', function() {
+    woocommerce_register_additional_checkout_field(
+        array(
+            'id'       => 'my-extension/large-order-notes',
+            'label'    => __( 'Large Order Notes', 'my-extension' ),
+            'location' => 'order',
+            'type'     => 'text',
+
+            // Only show for orders over $500 (hide when total <= $500).
+            'hidden'   => array(
+                'cart' => array(
+                    'properties' => array(
+                        'totals' => array(
+                            'properties' => array(
+                                'totalPrice' => array(
+                                    'maximum' => 50000, // Cents.
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        )
+    );
+} );
+```
+
+**Show field based on customer country:**
+
+```php
+<?php
+add_action( 'woocommerce_init', function() {
+    woocommerce_register_additional_checkout_field(
+        array(
+            'id'       => 'my-extension/tax-id',
+            'label'    => __( 'Tax ID / VAT Number', 'my-extension' ),
+            'location' => 'address',
+            'type'     => 'text',
+
+            // Only show for EU countries (hide when NOT in EU).
+            'hidden'   => array(
+                'customer' => array(
+                    'properties' => array(
+                        'address' => array(
+                            'properties' => array(
+                                'country' => array(
+                                    'not' => array(
+                                        'enum' => array( 'DE', 'FR', 'IT', 'ES', 'NL' ),
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        )
+    );
+} );
+```
+
+### Sanitize and Validate Block Checkout Fields
+
+```php
+<?php
+// Sanitize field value.
+add_action(
+    'woocommerce_sanitize_additional_field',
+    function( $value, $key ) {
+        if ( 'my-extension/company-id' !== $key ) {
+            return $value;
         }
-    }
-}, 10, 3 );
+        return sanitize_text_field( strtoupper( $value ) );
+    },
+    10,
+    2
+);
 
-// For 'order' location fields
-add_action( 'woocommerce_blocks_validate_location_order_fields', function( $errors, $fields, $group ) {
-    // Validation logic
-}, 10, 3 );
+// Validate field value.
+add_action(
+    'woocommerce_validate_additional_field',
+    function( \WP_Error $errors, $key, $value ) {
+        if ( 'my-extension/company-id' !== $key || empty( $value ) ) {
+            return;
+        }
+        if ( strlen( $value ) < 5 ) {
+            $errors->add(
+                'invalid_company_id',
+                __( 'Company ID must be at least 5 characters.', 'my-extension' )
+            );
+        }
+    },
+    10,
+    3
+);
 ```
 
 ---
@@ -402,9 +556,11 @@ wp eval "WC()->cart->add_to_cart(123); WC()->cart->calculate_totals(); print_r(W
 | Symptom | Likely Cause | Fix |
 |---------|--------------|-----|
 | Fee not showing | Hook priority too low | Use priority 20+ on `cart_calculate_fees` |
-| Validation not triggering | Wrong hook | Use `checkout_process` for classic, `blocks_validate_location_*` for blocks |
-| Field not saving | Missing save hook | Add `checkout_update_order_meta` handler |
-| Block field not appearing | Missing blocks_loaded | Register on `woocommerce_blocks_loaded` hook |
+| Validation not triggering | Wrong hook | Use `checkout_process` for classic, `woocommerce_validate_additional_field` for blocks |
+| Field not saving | Missing save hook | Add `checkout_update_order_meta` handler (classic) |
+| Block field not appearing | Wrong hook | Register on `woocommerce_init` hook |
+| Conditional field always hidden | Wrong JSON Schema | Use `not` wrapper to invert condition |
+| Conditional field not updating | WC version too old | Requires WooCommerce 9.9+ for conditional fields |
 | Cart item data lost | Missing unique key | Ensure cart_item_data creates unique hash |
 | Fees doubled | Hook running twice | Add `is_admin()` check |
 
@@ -423,8 +579,9 @@ wp eval "\$order = wc_get_order(123); print_r(\$order->get_meta_data());"
 
 ## Escalation
 
-- Additional checkout fields: https://developer.woocommerce.com/docs/block-development/extensible-blocks/cart-and-checkout-blocks/additional-checkout-fields/
-- How to add checkout fields guide: https://developer.woocommerce.com/docs/block-development/tutorials/how-to-additional-checkout-fields-guide/
-- Cart and Checkout extensibility: https://developer.woocommerce.com/docs/block-development/extensible-blocks/cart-and-checkout-blocks/
+- Additional checkout fields: https://developer.woocommerce.com/docs/block-development/extensible-blocks/cart-and-checkout-blocks/additional-checkout-fields.md
+- Conditional checkout fields (WC 9.9+): https://developer.woocommerce.com/docs/block-development/tutorials/how-to-conditional-additional-fields.md
+- How to add checkout fields guide: https://developer.woocommerce.com/docs/block-development/tutorials/how-to-additional-checkout-fields-guide.md
+- Cart and Checkout extensibility: https://developer.woocommerce.com/docs/block-development/extensible-blocks/cart-and-checkout-blocks.md
 - Block Checkout architecture: https://developer.woocommerce.com/2023/09/18/architecture-of-cart-and-checkout-blocks/
 - Modifying checkout fields: https://developer.woocommerce.com/2023/09/20/getting-to-know-woo-modifying-existing-cart-and-checkout-block-fields/

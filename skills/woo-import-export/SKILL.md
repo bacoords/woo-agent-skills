@@ -278,6 +278,6 @@ wp eval "echo ini_get('memory_limit');"
 
 - WooCommerce import docs: https://woocommerce.com/document/product-csv-importer-exporter/
 - Sample data location: `/plugins/woocommerce/sample-data/`
-- WC CLI commands: https://developer.woocommerce.com/docs/wc-cli/wc-cli-commands/
-- WC CLI examples: https://developer.woocommerce.com/docs/wc-cli/wc-cli-examples/
-- Adding analytics columns: https://developer.woocommerce.com/docs/features/analytics/adding-columns-to-analytics-reports-and-csv-downloads/
+- WC CLI commands: https://developer.woocommerce.com/docs/wc-cli/wc-cli-commands.md
+- WC CLI examples: https://developer.woocommerce.com/docs/wc-cli/wc-cli-examples.md
+- Adding analytics columns: https://developer.woocommerce.com/docs/features/analytics/adding-columns-to-analytics-reports-and-csv-downloads.md

@@ -325,9 +325,9 @@ Escalate to human review when:
 - HPOS migration on stores with complex order customizations
 
 **Documentation:**
-- WC CLI overview: https://developer.woocommerce.com/docs/wc-cli/cli-overview/
-- WC CLI commands reference: https://developer.woocommerce.com/docs/wc-cli/wc-cli-commands/
-- WC CLI examples: https://developer.woocommerce.com/docs/wc-cli/wc-cli-examples/
-- How to use WC CLI: https://developer.woocommerce.com/docs/wc-cli/using-wc-cli/
-- HPOS CLI tools: https://developer.woocommerce.com/docs/features/high-performance-order-storage/cli-tools/
-- WC CLI FAQ: https://developer.woocommerce.com/docs/wc-cli/cli-faq/
+- WC CLI overview: https://developer.woocommerce.com/docs/wc-cli/cli-overview.md
+- WC CLI commands reference: https://developer.woocommerce.com/docs/wc-cli/wc-cli-commands.md
+- WC CLI examples: https://developer.woocommerce.com/docs/wc-cli/wc-cli-examples.md
+- How to use WC CLI: https://developer.woocommerce.com/docs/wc-cli/using-wc-cli.md
+- HPOS CLI tools: https://developer.woocommerce.com/docs/features/high-performance-order-storage/cli-tools.md
+- WC CLI FAQ: https://developer.woocommerce.com/docs/wc-cli/cli-faq.md

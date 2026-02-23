@@ -57,7 +57,7 @@ If `features.blockCheckoutReady` is `false` and extension type includes `payment
 
 1. Extension may not work with Block Checkout
 2. Route to `woo-blocks-toolkit` for Block integration patterns
-3. See [Cart and Checkout Extensibility](https://developer.woocommerce.com/docs/block-development/extensible-blocks/cart-and-checkout-blocks/)
+3. See [Cart and Checkout Extensibility](https://developer.woocommerce.com/docs/block-development/extensible-blocks/cart-and-checkout-blocks.md)
 
 ### 4) Route to specialized skill
 
@@ -103,7 +103,7 @@ grep -r "extends WC_" --include="*.php" .
 
 ## Escalation
 
-- WooCommerce extension development: https://developer.woocommerce.com/docs/getting-started/
-- HPOS compatibility guide: https://developer.woocommerce.com/docs/features/high-performance-order-storage/recipe-book/
-- HPOS overview: https://developer.woocommerce.com/docs/features/high-performance-order-storage/
-- Block Checkout integration: https://developer.woocommerce.com/docs/block-development/extensible-blocks/cart-and-checkout-blocks/
+- WooCommerce extension development: https://developer.woocommerce.com/docs/getting-started.md
+- HPOS compatibility guide: https://developer.woocommerce.com/docs/features/high-performance-order-storage/recipe-book.md
+- HPOS overview: https://developer.woocommerce.com/docs/features/high-performance-order-storage.md
+- Block Checkout integration: https://developer.woocommerce.com/docs/block-development/extensible-blocks/cart-and-checkout-blocks.md

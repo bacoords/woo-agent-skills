@@ -239,8 +239,8 @@ find wp-content/uploads/wc-logs/ -name "*.log" | wc -l
 
 ## Escalation
 
-- Logging in WooCommerce: https://developer.woocommerce.com/docs/best-practices/data-management/logging/
-- Extension best practices: https://developer.woocommerce.com/docs/extensions/best-practices-extensions/extension-development-best-practices/
+- Logging in WooCommerce: https://developer.woocommerce.com/docs/best-practices/data-management/logging.md
+- Extension best practices: https://developer.woocommerce.com/docs/extensions/best-practices-extensions/extension-development-best-practices.md
 - Query Monitor: https://querymonitor.com/
 - WooCommerce status report: WooCommerce > Status > System Status
 - Error handling updates: https://developer.woocommerce.com/2024/09/23/recent-updates-to-error-handling-and-optional-remote-error-logging/
