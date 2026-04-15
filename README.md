@@ -19,6 +19,7 @@ Agent Skills solve this by giving AI assistants **expert-level WooCommerce knowl
 | Skill | What it teaches |
 |-------|-----------------|
 | **woo-cart-checkout** | Modifying cart and checkout behavior, custom fields, order processing |
+| **woo-mcp-connect** | Connect WooCommerce to AI assistants via Model Context Protocol (MCP) |
 
 ## Quick Start
 
