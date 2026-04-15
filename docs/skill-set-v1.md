@@ -3,6 +3,7 @@
 This repo currently includes:
 
 - `woo-cart-checkout`
+- `woo-mcp-connect`
 
 Planned next skills (not yet implemented):
 
