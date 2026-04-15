@@ -27,11 +27,14 @@ Before starting, gather from the user:
 
 ## Procedure
 
+**Important:** Pause after each step and confirm the user is ready to proceed before continuing.
+
 ### Step 1: Gather information
 
-Ask the user:
-- What is your WooCommerce store URL?
-- Is this a production site or local development environment?
+Ask the user two questions:
+
+1. **Store URL**: What is your WooCommerce store URL? (default: `http://localhost`)
+2. **Environment**: Is this a production site or local development?
 
 ### Step 2: Enable MCP feature
 
