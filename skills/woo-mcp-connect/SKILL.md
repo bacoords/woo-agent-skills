@@ -43,14 +43,17 @@ The MCP integration feature must be enabled in WooCommerce. Provide the user wit
 **Option A: Via WooCommerce Settings (easiest)**
 
 Go to **WooCommerce → Settings → Advanced → Features** and enable "MCP Integration":
+
 - Direct link: `{STORE_URL}/wp-admin/admin.php?page=wc-settings&tab=advanced&section=features#woocommerce_feature_mcp_integration_enabled`
 
 **Option B: Via WP-CLI**
+
 ```bash
 wp option update woocommerce_feature_mcp_integration_enabled yes
 ```
 
 **Option C: Via code in theme/plugin**
+
 ```php
 add_filter( 'woocommerce_features', function( $features ) {
     $features['mcp_integration'] = true;
@@ -60,7 +63,7 @@ add_filter( 'woocommerce_features', function( $features ) {
 
 ### Step 3: Local development only - Allow insecure transport
 
-If the user is on local development (HTTP, not HTTPS), they need to add this filter:
+If the user is on local development and their Store URL uses HTTP, not HTTPS, they need to add this filter:
 
 ```php
 add_filter( 'woocommerce_mcp_allow_insecure_transport', '__return_true' );
@@ -92,6 +95,7 @@ claude mcp add woocommerce_mcp \
 ```
 
 Replace the placeholders with the user's actual values:
+
 - `{STORE_URL}` - Their store URL
 - `{CONSUMER_KEY}` - The consumer key from Step 4
 - `{CONSUMER_SECRET}` - The consumer secret from Step 4
@@ -125,6 +129,7 @@ After setup, verify the connection works:
 3. Test with a simple query like "List recent orders" or "Show products"
 
 If issues occur, check:
+
 - **WooCommerce → Status → Logs** (filter for `woocommerce-mcp`)
 - Verify the API key has correct permissions
 - Confirm the MCP feature is enabled
@@ -132,12 +137,12 @@ If issues occur, check:
 
 ## Failure modes
 
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Server unavailable | MCP feature not enabled | Run the WP-CLI command or add the filter |
-| Authentication fails | Invalid credentials | Verify key:secret format, regenerate if needed |
-| Connection refused | HTTPS required on production | Ensure site uses HTTPS |
-| Connection refused (local) | HTTP blocked | Add `woocommerce_mcp_allow_insecure_transport` filter |
+| Issue                      | Cause                        | Solution                                              |
+| -------------------------- | ---------------------------- | ----------------------------------------------------- |
+| Server unavailable         | MCP feature not enabled      | Run the WP-CLI command or add the filter              |
+| Authentication fails       | Invalid credentials          | Verify key:secret format, regenerate if needed        |
+| Connection refused         | HTTPS required on production | Ensure site uses HTTPS                                |
+| Connection refused (local) | HTTP blocked                 | Add `woocommerce_mcp_allow_insecure_transport` filter |
 
 ## Available MCP operations
 
