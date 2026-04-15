@@ -13,7 +13,7 @@ This repo is built for **AI-assisted authoring** with **deterministic guardrails
 ## Workflow: draft → harden → ship
 
 1. **Triage first**
-   - Start from `skills/woo-project-triage/SKILL.md` to detect WooCommerce version, HPOS mode, and active features.
+   - Start by detecting WooCommerce version, HPOS mode, and active features.
 2. **Collect inputs**
    - What extension type(s) does triage detect?
    - What WooCommerce/WP/PHP versions are targeted (if known)?

@@ -18,16 +18,7 @@ Agent Skills solve this by giving AI assistants **expert-level WooCommerce knowl
 
 | Skill | What it teaches |
 |-------|-----------------|
-| **woo-project-triage** | Detects WooCommerce project type, version, HPOS mode, and active features |
-| **woo-extension-patterns** | Extension structure, lifecycle hooks, settings integration, HPOS compatibility |
-| **woo-settings** | Adding settings pages and options using WC Settings API |
 | **woo-cart-checkout** | Modifying cart and checkout behavior, custom fields, order processing |
-| **woo-theming** | Template overrides, custom CSS, block styles, theme integration |
-| **woo-cli** | WooCommerce CLI commands (`wp wc`), bulk operations, data import/export |
-| **woo-logging-debugging** | WC Logger usage, log reading, Query Monitor, debug mode, status reports |
-| **woo-action-scheduler** | Action Scheduler CLI, viewing/managing queued actions, debugging failed jobs |
-| **woo-import-export** | Built-in CSV importer/exporter, bulk CLI operations, data transformation |
-| **woo-blocks-toolkit** | wp-scripts for block development, checkout/cart block extension points |
 
 ## Quick Start
 
@@ -45,7 +36,7 @@ node shared/scripts/skillpack-build.mjs --clean
 node shared/scripts/skillpack-install.mjs --global
 
 # Or install specific skills only
-node shared/scripts/skillpack-install.mjs --global --skills=woo-project-triage,woo-extension-patterns
+node shared/scripts/skillpack-install.mjs --global --skills=woo-cart-checkout
 ```
 
 This installs skills to `~/.claude/skills/` where Claude Code will automatically discover them.
@@ -79,7 +70,7 @@ node shared/scripts/skillpack-install.mjs --list
 node shared/scripts/skillpack-install.mjs --global --dry-run
 
 # Install specific skills to a project
-node shared/scripts/skillpack-install.mjs --dest=../my-repo --targets=claude --skills=woo-cli
+node shared/scripts/skillpack-install.mjs --dest=../my-repo --targets=claude --skills=woo-cart-checkout
 ```
 
 ### Manual installation
@@ -91,14 +82,12 @@ Copy any skill folder from `skills/` into your project's instructions directory 
 Each skill contains:
 
 ```
-skills/woo-extension-patterns/
+skills/woo-cart-checkout/
 ├── SKILL.md              # Main instructions (when to use, procedure, verification)
 ├── references/           # Deep-dive docs on specific topics
-│   ├── hpos-compatibility.md
-│   ├── lifecycle-hooks.md
 │   └── ...
 └── scripts/              # Deterministic helpers (detection, validation)
-    └── detect_extension.mjs
+    └── ...
 ```
 
 When you ask your AI assistant to work on WooCommerce code, it reads these skills and follows the documented procedures rather than guessing.

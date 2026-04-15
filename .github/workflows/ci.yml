@@ -26,5 +26,5 @@ jobs:
           rm -rf /tmp/skillpack-install-test
           mkdir -p /tmp/skillpack-install-test
           node shared/scripts/skillpack-install.mjs --from=dist --dest=/tmp/skillpack-install-test --targets=codex,vscode
-          test -f /tmp/skillpack-install-test/.codex/skills/woo-project-triage/SKILL.md
-          test -f /tmp/skillpack-install-test/.github/skills/woo-project-triage/SKILL.md
+          test -f /tmp/skillpack-install-test/.codex/skills/woo-cart-checkout/SKILL.md
+          test -f /tmp/skillpack-install-test/.github/skills/woo-cart-checkout/SKILL.md

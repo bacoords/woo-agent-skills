@@ -114,9 +114,7 @@ function detectChanges(lastState, currentState) {
       newVersion: current.wooLatest,
       riskLevel: "high",
       affectedSkills: [
-        "woo-project-triage",
-        "woo-extension-patterns",
-        "woo-cli",
+        "woo-cart-checkout",
       ],
     });
   } else if (last.wooLatest !== current.wooLatest) {
@@ -127,7 +125,7 @@ function detectChanges(lastState, currentState) {
       oldVersion: last.wooLatest,
       newVersion: current.wooLatest,
       riskLevel: "low",
-      affectedSkills: ["woo-project-triage"],
+      affectedSkills: ["woo-cart-checkout"],
     });
   }
 
@@ -137,7 +135,7 @@ function detectChanges(lastState, currentState) {
       type: "php-requirement-change",
       description: `PHP requirement changed: ${last.requiresPHP} → ${current.requiresPHP}`,
       riskLevel: "medium",
-      affectedSkills: ["woo-extension-patterns"],
+      affectedSkills: ["woo-cart-checkout"],
     });
   }
 
@@ -147,7 +145,7 @@ function detectChanges(lastState, currentState) {
       type: "wp-compatibility-change",
       description: `WordPress tested up to: ${last.testedUpTo} → ${current.testedUpTo}`,
       riskLevel: "low",
-      affectedSkills: ["woo-project-triage"],
+      affectedSkills: ["woo-cart-checkout"],
     });
   }
 
