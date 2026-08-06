@@ -1,0 +1,4 @@
+interface:
+  display_name: "Woo Block Theme Development"
+  short_description: "Develop WooCommerce block themes"
+  default_prompt: "Use $woo-block-theme-dev to inspect the target theme and implement this WooCommerce block-theme change using current documentation."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Woo MCP Connection"
+  short_description: "Connect Woo abilities through WordPress MCP"
+  default_prompt: "Use $woo-mcp-connect to inspect this WordPress site and configure or migrate a safe standard MCP connection for WooCommerce abilities."

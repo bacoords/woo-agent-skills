@@ -1,0 +1,4 @@
+interface:
+  display_name: "Woo Extension Development"
+  short_description: "Build modern WooCommerce extensions"
+  default_prompt: "Use $woo-extension-dev to inspect this project and implement the WooCommerce extension change with the correct current extensibility pathway."

@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "skills": {
+    "woo-extension-dev": {
+      "references": [
+        "docs-first.md",
+        "site-capabilities.md",
+        "extension-registration.md",
+        "settings-admin.md",
+        "cart-checkout.md",
+        "orders-hpos.md",
+        "block-integrations.md",
+        "abilities-mcp.md"
+      ],
+      "scripts": [
+        "inspect-woo-context.mjs",
+        "woo-docs.mjs"
+      ]
+    },
+    "woo-block-theme-dev": {
+      "references": [
+        "docs-first.md",
+        "site-capabilities.md",
+        "block-theme-templates.md",
+        "block-theme-styles.md"
+      ],
+      "scripts": [
+        "inspect-woo-context.mjs",
+        "woo-docs.mjs"
+      ]
+    },
+    "woo-mcp-connect": {
+      "references": [
+        "docs-first.md",
+        "site-capabilities.md",
+        "abilities-mcp.md"
+      ],
+      "scripts": [
+        "inspect-woo-context.mjs",
+        "woo-docs.mjs"
+      ]
+    }
+  }
+}

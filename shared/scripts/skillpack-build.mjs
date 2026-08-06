@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { spawnSync } from "node:child_process";
 
 function usage() {
   process.stderr.write(
@@ -42,6 +43,15 @@ function parseArgs(argv) {
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
+}
+
+function verifySharedResources(repoRoot) {
+  const scriptPath = path.join(repoRoot, "shared", "scripts", "sync-skill-resources.mjs");
+  const result = spawnSync(process.execPath, [scriptPath, "--check"], {
+    cwd: repoRoot,
+    encoding: "utf8",
+  });
+  assert(result.status === 0, result.stderr.trim() || "Shared skill resource verification failed");
 }
 
 function isSymlink(p) {
@@ -128,6 +138,8 @@ function main() {
   const skillsRoot = path.join(repoRoot, "skills");
   const outDir = path.isAbsolute(args.out) ? args.out : path.join(repoRoot, args.out);
 
+  verifySharedResources(repoRoot);
+
   let skillDirs = listSkillDirs(skillsRoot);
   assert(skillDirs.length > 0, "No skills found under ./skills");
 
@@ -162,4 +174,3 @@ function main() {
 }
 
 main();
-

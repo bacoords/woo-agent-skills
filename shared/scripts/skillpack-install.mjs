@@ -33,10 +33,10 @@ function usage() {
       "  node shared/scripts/skillpack-install.mjs --global",
       "",
       "  # Install specific skills globally",
-      "  node shared/scripts/skillpack-install.mjs --global --skills=wp-playground,wp-block-development",
+      "  node shared/scripts/skillpack-install.mjs --global --skills=woo-extension-dev,woo-block-theme-dev",
       "",
       "  # Install to project with specific skills",
-      "  node shared/scripts/skillpack-install.mjs --dest=../my-repo --targets=claude --skills=wp-wpcli-and-ops",
+      "  node shared/scripts/skillpack-install.mjs --dest=../my-repo --targets=claude --skills=woo-extension-dev",
       "",
     ].join("\n")
   );

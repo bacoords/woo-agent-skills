@@ -1,55 +1,41 @@
-# Authoring guide (AI-assisted)
+# Authoring guide
 
-This repo is built for **AI-assisted authoring** with **deterministic guardrails**.
+Keep skill entrypoints concise and procedural. Put detailed, changing, or domain-specific guidance in references and repeated deterministic work in scripts.
 
-## Golden rules
+## Workflow
 
-- Keep `SKILL.md` short and procedural; push depth into `references/` and scripts.
-- Prefer deterministic scripts for anything the agent would otherwise "guess" (repo detection, version checks, lint/test command discovery).
-- Don't add a new skill without at least one scenario in `eval/scenarios/`.
-- Keep file references 1 hop from `SKILL.md` (avoid deep chains).
-- Include a `compatibility:` frontmatter line matching `docs/compatibility-policy.md`.
+1. Define realistic prompts and the evidence required to answer them safely.
+2. Inspect the repository/site before asking the user for discoverable facts.
+3. Search the current Woo documentation index and read relevant Markdown documents.
+4. Add or update canonical resources under `shared/skill-resources/` when guidance is shared.
+5. Materialize resources with `node shared/scripts/sync-skill-resources.mjs --write`.
+6. Add JSON scenarios and fixture-driven tests.
+7. Run `node eval/harness/run.mjs` and build every target.
 
-## Workflow: draft → harden → ship
+## Skill shape
 
-1. **Triage first**
-   - Start by detecting WooCommerce version, HPOS mode, and active features.
-2. **Collect inputs**
-   - What extension type(s) does triage detect?
-   - What WooCommerce/WP/PHP versions are targeted (if known)?
-   - What tooling exists (Composer, npm, PHPUnit, Playwright)?
-3. **Draft the skill (AI-assisted)**
-   - Write `SKILL.md` as a checklist/procedure with explicit "Verification" and "Failure modes".
-   - Keep examples short; link to topic references when needed.
-4. **Add deterministic helpers**
-   - If the skill depends on detection (versions, project layout, build system), add a script under `scripts/`.
-5. **Add evaluation scenario(s)**
-   - Add at least 1 prompt-style scenario under `eval/scenarios/` describing expected behavior.
-6. **Validate**
-   - Run `node eval/harness/run.mjs`.
+- Frontmatter contains only `name` and `description`.
+- The description contains all triggering contexts.
+- The body uses imperative instructions and stays under 500 lines.
+- References are one hop from `SKILL.md` and loaded only for the relevant domain.
+- `agents/openai.yaml` contains quoted `display_name`, `short_description`, and `default_prompt` values.
 
-## Scaffolding a new skill
+Scaffold with:
 
-Use the scaffold script to create a minimal, spec-compliant starting point:
+```bash
+node shared/scripts/scaffold-skill.mjs <skill-name> "<description>"
+```
 
-- `node shared/scripts/scaffold-skill.mjs <skill-name> "<description>"`
+## Capability rules
 
-## "Skill generation" prompt template (recommended)
+- Treat runtime evidence as authoritative for active state.
+- Treat repository code as evidence of support or intent only.
+- Keep active theme, Cart, and Checkout pathways independent.
+- Preserve `unknown` and ask a focused question only when the unknown changes the implementation.
+- Prefer deterministic scripts over shell snippets an agent would have to reconstruct.
 
-When using an LLM to draft a skill, provide:
+## Shared resources
 
-- The repo triage JSON output
-- The user's task statement(s)
-- Any version constraints and non-goals
-- The required sections: When to use, Inputs required, Procedure, Verification, Failure modes, Escalation
+`shared/skill-resources/manifest.json` maps canonical flat reference/script filenames to skills. Do not edit materialized copies under `skills/*/references` or `skills/*/scripts`; edit the canonical file and sync it.
 
-Then ask the model to output:
-
-1. `skills/<skill-name>/SKILL.md`
-2. Any `references/*.md` files it mentions
-3. Any `scripts/*` stubs needed for deterministic checks
-4. One scenario markdown file under `eval/scenarios/`
-
-## Suggested initial domain skills (v1)
-
-See `docs/skill-set-v1.md`.
+The build and eval harness run sync in check mode so packages cannot ship stale copies.

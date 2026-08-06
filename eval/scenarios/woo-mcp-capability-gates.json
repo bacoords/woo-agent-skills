@@ -1,0 +1,16 @@
+{
+  "name": "Gate Woo MCP setup on the actual site capabilities",
+  "skills": ["woo-mcp-connect"],
+  "query": "Check whether this site can expose Woo abilities without installing duplicate MCP components.",
+  "expected_behavior": [
+    "Distinguish an active standalone MCP Adapter plugin from Woo's bundled adapter feature",
+    "Do not install or initialize a second adapter when either provider already supplies the default server",
+    "Require an upgrade instead of legacy setup when WordPress is below 6.9",
+    "Report Woo installed without canonical Woo abilities as a registration/version problem"
+  ],
+  "success_criteria": [
+    "Adapter provider and default server evidence are reported separately",
+    "The Woo feature flag is not treated as the ability-registration switch",
+    "No deprecated Woo transport is offered as a fallback"
+  ]
+}

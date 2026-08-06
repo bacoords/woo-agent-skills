@@ -1,21 +1,19 @@
 # Compatibility policy
 
-This repo is an authoring workspace for WooCommerce-focused Agent Skills.
+## General baseline
 
-## Compatibility contract (v1)
+- WooCommerce 10.x+
+- WordPress 6.7+
+- PHP 8.0+
 
-Skills in this repo target:
+Use modern Woo APIs and assume HPOS is the default order storage architecture, but inspect actual runtime state and declared project requirements. Do not add compatibility below these floors unless the repository explicitly changes its policy.
 
-- WooCommerce **10.x+**
-- WordPress **6.7+**
-- PHP **8.0+**
+## Capability gates
 
-## Authoring rules
+- WordPress Abilities API: WordPress 6.9+
+- Woo abilities through MCP: require the Abilities API, an available standard WordPress MCP Adapter server, and discovery of the needed `woocommerce/*` ability
+- Block APIs and Woo Settings UI: verify availability against detected Woo/WordPress versions and current docs
 
-Skills should:
+Version numbers alone do not prove that a feature is enabled or registered. Report a prerequisite or unknown capability instead of substituting a deprecated pathway.
 
-- Use modern WooCommerce APIs and patterns exclusively.
-- Assume HPOS is enabled (it's the default in WooCommerce 9+).
-- Leverage PHP 8.0+ features (constructor promotion, named arguments, match expressions).
-- Prefer detection + guardrails (triage) over hard-coded assumptions.
-- Default guidance assumes WooCommerce 10.x+ — don't add backwards compatibility for older versions.
+Compatibility details belong in skill procedures and references, not YAML frontmatter.

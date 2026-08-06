@@ -1,125 +1,90 @@
 # Agent Skills for WooCommerce
 
-**Teach AI coding assistants how to build WooCommerce extensions the right way.**
+Portable instructions and deterministic helpers that teach AI coding assistants to inspect a WooCommerce project, consult current developer documentation, and select the correct extensibility pathway before changing code.
 
-Agent Skills are portable bundles of instructions, checklists, and scripts that help AI assistants (Claude, Copilot, Codex, Cursor, etc.) understand WooCommerce development patterns, avoid common mistakes, and follow best practices.
+## Skills
 
-## Why Agent Skills?
+| Skill | Purpose |
+|---|---|
+| **woo-extension-dev** | General Woo extension development: registration, settings, HPOS/orders, Cart/Checkout, Store API, blocks, and Abilities |
+| **woo-block-theme-dev** | Woo block-theme templates, patterns, `theme.json`, global styles, and Site Editor troubleshooting |
+| **woo-mcp-connect** | Connect to canonical Woo abilities through the standard WordPress MCP Adapter or migrate a legacy Woo MCP client |
 
-AI coding assistants are powerful, but they often:
-- Generate outdated WooCommerce patterns (pre-HPOS, deprecated hooks)
-- Miss critical security considerations in payment gateway development
-- Skip proper HPOS compatibility declarations
-- Ignore existing tooling in your repo
+The two development skills share a docs-first and capability-inspection workflow. Theme type, Cart type, and Checkout type are detected independently instead of inferred from one another.
 
-Agent Skills solve this by giving AI assistants **expert-level WooCommerce knowledge** in a format they can actually use.
-
-## Available Skills
-
-| Skill | What it teaches |
-|-------|-----------------|
-| **woo-cart-checkout** | Modifying cart and checkout behavior, custom fields, order processing |
-| **woo-mcp-connect** | Connect WooCommerce to AI assistants via Model Context Protocol (MCP) |
-
-## Quick Start
-
-### Install globally for Claude Code
+## Build and install
 
 ```bash
-# Clone agent-skills
 git clone https://github.com/WordPress/agent-skills.git
 cd agent-skills
-
-# Build the distribution
 node shared/scripts/skillpack-build.mjs --clean
+```
 
-# Install all skills globally (available across all projects)
+Install all skills into a project:
+
+```bash
+node shared/scripts/skillpack-install.mjs \
+  --dest=../your-woo-project \
+  --targets=codex,vscode,claude
+```
+
+Install selected skills:
+
+```bash
+node shared/scripts/skillpack-install.mjs \
+  --dest=../your-woo-project \
+  --targets=codex \
+  --skills=woo-extension-dev,woo-block-theme-dev
+```
+
+Install globally for Claude Code:
+
+```bash
 node shared/scripts/skillpack-install.mjs --global
-
-# Or install specific skills only
-node shared/scripts/skillpack-install.mjs --global --skills=woo-cart-checkout
 ```
 
-This installs skills to `~/.claude/skills/` where Claude Code will automatically discover them.
+Target locations:
 
-### Install into your repo
+- Codex: `.codex/skills/`
+- VS Code / GitHub Copilot: `.github/skills/`
+- Claude Code: `.claude/skills/`
+
+Manual installation is also supported: each checked-in `skills/<name>/` directory contains its required references and scripts.
+
+## How the shared resources work
+
+Canonical references and helpers live under `shared/skill-resources/`. A manifest selects which resources each skill receives. Materialized copies are committed inside each skill so installations stay self-contained and symlink-free.
 
 ```bash
-# Clone agent-skills
-git clone https://github.com/WordPress/agent-skills.git
-cd agent-skills
+# Update materialized copies after editing canonical resources
+node shared/scripts/sync-skill-resources.mjs --write
 
-# Build the distribution
-node shared/scripts/skillpack-build.mjs --clean
-
-# Install into your WooCommerce project
-node shared/scripts/skillpack-install.mjs --dest=../your-woo-project --targets=codex,vscode,claude
+# Verify that copies have not drifted
+node shared/scripts/sync-skill-resources.mjs --check
 ```
 
-This copies skills into:
-- `.codex/skills/` for OpenAI Codex
-- `.github/skills/` for VS Code / GitHub Copilot
-- `.claude/skills/` for Claude Code (project-level)
-
-### Available options
-
-```bash
-# List available skills
-node shared/scripts/skillpack-install.mjs --list
-
-# Dry run (preview without installing)
-node shared/scripts/skillpack-install.mjs --global --dry-run
-
-# Install specific skills to a project
-node shared/scripts/skillpack-install.mjs --dest=../my-repo --targets=claude --skills=woo-cart-checkout
-```
-
-### Manual installation
-
-Copy any skill folder from `skills/` into your project's instructions directory for your AI assistant.
-
-## How It Works
-
-Each skill contains:
-
-```
-skills/woo-cart-checkout/
-├── SKILL.md              # Main instructions (when to use, procedure, verification)
-├── references/           # Deep-dive docs on specific topics
-│   └── ...
-└── scripts/              # Deterministic helpers (detection, validation)
-    └── ...
-```
-
-When you ask your AI assistant to work on WooCommerce code, it reads these skills and follows the documented procedures rather than guessing.
+The skillpack build and evaluation harness reject drift automatically.
 
 ## Compatibility
 
-- **WooCommerce 10.x+** (WordPress 6.7+, PHP 8.0+)
-- Works with any AI assistant that supports project-level instructions
+- General baseline: WooCommerce 10.x+, WordPress 6.7+, PHP 8.0+
+- Abilities API and standard Woo MCP workflows: WordPress 6.9+ and actual discovery of the required abilities
+- Filesystem-based assistants with Node.js; runtime inspection uses WP-CLI when available
 
 ## Contributing
 
-**We welcome contributions!** This project is a great way to share your WooCommerce expertise—you don't need to be a coding wizard. Most skills are written in Markdown, focusing on clear procedures and best practices.
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to get started.
-
-Quick commands:
+See [CONTRIBUTING.md](CONTRIBUTING.md) and the [authoring guide](docs/authoring-guide.md).
 
 ```bash
-# Scaffold a new skill
 node shared/scripts/scaffold-skill.mjs <skill-name> "<description>"
-
-# Validate skills
 node eval/harness/run.mjs
 ```
 
-## Documentation
+Additional documentation:
 
-- [Authoring Guide](docs/authoring-guide.md) - How to create and improve skills
-- [Principles](docs/principles.md) - Design philosophy
-- [Packaging](docs/packaging.md) - Build and distribution
-- [Compatibility Policy](docs/compatibility-policy.md) - Version targeting
+- [Principles](docs/principles.md)
+- [Packaging](docs/packaging.md)
+- [Compatibility policy](docs/compatibility-policy.md)
 
 ## License
 

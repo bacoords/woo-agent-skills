@@ -1,0 +1,16 @@
+{
+  "name": "Connect remotely with WordPress Application Passwords",
+  "skills": ["woo-mcp-connect"],
+  "query": "Configure a remote HTTPS Woo store for an MCP client.",
+  "expected_behavior": [
+    "Use the default WordPress MCP HTTP route and mcp-wordpress-remote",
+    "Use a dedicated least-privileged WordPress user and Application Password",
+    "Keep real credentials out of generated output and committed configuration",
+    "Verify discovery and a read-only Woo ability"
+  ],
+  "success_criteria": [
+    "The client config uses WP_API_URL, WP_API_USERNAME, and WP_API_PASSWORD",
+    "Authentication and permission failures have separate diagnostics",
+    "The deprecated Woo-specific transport is not offered as fallback"
+  ]
+}

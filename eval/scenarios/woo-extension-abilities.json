@@ -1,0 +1,16 @@
+{
+  "name": "Register a Woo extension ability",
+  "skills": ["woo-extension-dev"],
+  "query": "Expose this extension's inventory summary as a WordPress Ability for agents.",
+  "expected_behavior": [
+    "Require WordPress 6.9 or newer and search current Abilities and MCP Adapter docs",
+    "Register category and ability on their required initialization hooks",
+    "Define complete schemas, accurate annotations, and a permission callback",
+    "Use standard public or MCP metadata rather than deprecated Woo MCP exposure metadata"
+  ],
+  "success_criteria": [
+    "wp ability validation and permission checks are included",
+    "A read-only invocation verifies the contract",
+    "No legacy Woo endpoint is introduced"
+  ]
+}

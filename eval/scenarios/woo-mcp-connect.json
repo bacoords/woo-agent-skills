@@ -1,0 +1,16 @@
+{
+  "name": "Connect to canonical Woo abilities through WordPress MCP",
+  "skills": ["woo-mcp-connect"],
+  "query": "Connect my local WooCommerce site to my MCP client so it can query products.",
+  "expected_behavior": [
+    "Inspect WordPress, Woo, wp ability, and the MCP Adapter default server",
+    "Use local WP-CLI STDIO with mcp-adapter-default-server",
+    "Discover Woo abilities through the adapter discovery tool rather than expecting top-level Woo tools",
+    "Inspect the product-query schema and test a minimal read-only query"
+  ],
+  "success_criteria": [
+    "The standard WordPress MCP server is configured",
+    "No Woo REST API key or deprecated endpoint is requested",
+    "No write or destructive ability is used for verification"
+  ]
+}

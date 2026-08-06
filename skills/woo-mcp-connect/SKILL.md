@@ -1,154 +1,94 @@
 ---
 name: woo-mcp-connect
-description: Connect WooCommerce to AI coding assistants via the Model Context Protocol (MCP). Guides through enabling the feature, creating API credentials, and configuring Claude Code or other MCP clients.
-compatibility: WooCommerce 10.x+ (WP 6.7+, PHP 8.0+). Filesystem-based agent with bash + node.
+description: Connect AI clients to WooCommerce abilities through the standard WordPress MCP Adapter, verify discovery and safe execution, troubleshoot WordPress MCP connectivity, or migrate a deprecated Woo-specific MCP configuration. Use for local STDIO, remote HTTP, application-password authentication, default MCP server discovery, and Woo ability availability.
 ---
 
-# woo-mcp-connect
+# Connect Woo abilities through WordPress MCP
 
-Connect WooCommerce to AI coding assistants via the Model Context Protocol (MCP).
+Use the WordPress Abilities API as the capability layer and the WordPress MCP Adapter as the transport. Do not configure the deprecated Woo-specific server for new connections.
 
-## When to use
+## Inspect first
 
-- User wants to connect their WooCommerce store to Claude Code or another MCP client
-- User asks about WooCommerce MCP setup or configuration
-- User wants AI assistants to interact with their store's products, orders, or data
+1. Gather the local WordPress path or remote site URL, environment type, intended WordPress user, MCP client, and required read/write operations.
+2. Run:
 
-## Documentation
+   ```bash
+   node scripts/inspect-woo-context.mjs --wp-path=<local-wordpress-path>
+   ```
 
-- [WooCommerce MCP Documentation](https://developer.woocommerce.com/docs/features/mcp.md)
+   For a remote-only site, inspect the available repository and gather version/adapter facts from the site administrator.
+3. Read [Abilities and standard MCP](references/abilities-mcp.md) and [site capabilities](references/site-capabilities.md).
+4. Follow [the documentation-first workflow](references/docs-first.md) because the adapter and ability metadata are evolving.
 
-## Inputs required
+Require WordPress 6.9 or newer. Confirm that canonical `woocommerce/*` abilities are actually registered; do not infer them from a version number alone.
 
-Before starting, gather from the user:
+## Select one standard transport
 
-1. **Store URL** - The full URL of their WooCommerce store (e.g., `https://mystore.com`)
-2. **Environment type** - Is this a production site or local development?
+### Local WordPress: STDIO
 
-## Procedure
-
-**Important:** Pause after each step and confirm the user is ready to proceed before continuing.
-
-### Step 1: Gather information
-
-Ask the user two questions:
-
-1. **Store URL**: What is your WooCommerce store URL? (default: `http://localhost`)
-2. **Environment**: Is this a production site or local development?
-
-### Step 2: Enable MCP feature
-
-The MCP integration feature must be enabled in WooCommerce. Provide the user with one of these options:
-
-**Option A: Via WooCommerce Settings (easiest)**
-
-Go to **WooCommerce → Settings → Advanced → Features** and enable "MCP Integration":
-
-- Direct link: `{STORE_URL}/wp-admin/admin.php?page=wc-settings&tab=advanced&section=features#woocommerce_feature_mcp_integration_enabled`
-
-**Option B: Via WP-CLI**
-
-```bash
-wp option update woocommerce_feature_mcp_integration_enabled yes
-```
-
-**Option C: Via code in theme/plugin**
-
-```php
-add_filter( 'woocommerce_features', function( $features ) {
-    $features['mcp_integration'] = true;
-    return $features;
-});
-```
-
-### Step 3: Local development only - Allow insecure transport
-
-If the user is on local development and their Store URL uses HTTP, not HTTPS, they need to add this filter:
-
-```php
-add_filter( 'woocommerce_mcp_allow_insecure_transport', '__return_true' );
-```
-
-### Step 4: Create API credentials
-
-Guide the user to create REST API credentials:
-
-1. Go to **WooCommerce → Settings → Advanced → REST API**
-   - Direct link: `{STORE_URL}/wp-admin/admin.php?page=wc-settings&tab=advanced&section=keys`
-2. Click **Add Key**
-3. Enter a description (e.g., "Claude Code MCP")
-4. Set permissions to **Read/Write** (or appropriate level for their needs)
-5. Click **Generate API Key**
-6. **Save both keys** - the Consumer Key and Consumer Secret are shown only once
-
-The credentials format is: `consumer_key:consumer_secret`
-
-### Step 5: Configure Claude Code
-
-Provide the user with the command to add the MCP server to Claude Code:
-
-```bash
-claude mcp add woocommerce_mcp \
-  --env WP_API_URL={STORE_URL}/wp-json/woocommerce/mcp \
-  --env CUSTOM_HEADERS='{"X-MCP-API-Key": "{CONSUMER_KEY}:{CONSUMER_SECRET}"}' \
-  -- npx -y @automattic/mcp-wordpress-remote@latest
-```
-
-Replace the placeholders with the user's actual values:
-
-- `{STORE_URL}` - Their store URL
-- `{CONSUMER_KEY}` - The consumer key from Step 4
-- `{CONSUMER_SECRET}` - The consumer secret from Step 4
-
-### Step 6: Alternative - Manual MCP configuration
-
-If the user prefers manual configuration or uses a different MCP client, provide this JSON config:
+Prefer the existing default adapter server:
 
 ```json
 {
   "mcpServers": {
-    "woocommerce_mcp": {
-      "type": "stdio",
+    "wordpress-woo": {
+      "command": "wp",
+      "args": [
+        "--path=/absolute/path/to/wordpress",
+        "mcp-adapter",
+        "serve",
+        "--server=mcp-adapter-default-server",
+        "--user=least-privileged-user"
+      ]
+    }
+  }
+}
+```
+
+### Remote WordPress: HTTP proxy
+
+Use a dedicated least-privileged WordPress user and an Application Password:
+
+```json
+{
+  "mcpServers": {
+    "wordpress-woo": {
       "command": "npx",
       "args": ["-y", "@automattic/mcp-wordpress-remote@latest"],
       "env": {
-        "WP_API_URL": "{STORE_URL}/wp-json/woocommerce/mcp",
-        "CUSTOM_HEADERS": "{\"X-MCP-API-Key\": \"{CONSUMER_KEY}:{CONSUMER_SECRET}\"}"
+        "WP_API_URL": "https://example.com/wp-json/mcp/mcp-adapter-default-server",
+        "WP_API_USERNAME": "wordpress-user",
+        "WP_API_PASSWORD": "application-password"
       }
     }
   }
 }
 ```
 
-## Verification
+Keep real credentials out of chat, shell history, committed files, screenshots, and logs. Translate the generic configuration to client-specific syntax only when needed.
 
-After setup, verify the connection works:
+## Verify safely
 
-1. Restart Claude Code (or the MCP client)
-2. The WooCommerce MCP server should appear in the available tools
-3. Test with a simple query like "List recent orders" or "Show products"
+1. Confirm the default server is available with `wp mcp-adapter list` for local sites.
+2. Confirm `tools/list` exposes the adapter's discovery, info, and execution tools. Do not expect one top-level MCP tool per Woo ability.
+3. Call ability discovery and confirm the required `woocommerce/*` IDs.
+4. Inspect the selected ability schema and annotations.
+5. Execute a read-only query, such as product or order discovery, with the minimum result size.
+6. Do not execute a write or destructive ability merely to prove connectivity.
 
-If issues occur, check:
+## Migrate legacy configurations
 
-- **WooCommerce → Status → Logs** (filter for `woocommerce-mcp`)
-- Verify the API key has correct permissions
-- Confirm the MCP feature is enabled
-- For local dev: ensure the insecure transport filter is active
+If the inspector reports legacy signals, use the migration section in [Abilities and standard MCP](references/abilities-mcp.md). Produce a redacted configuration diff, establish the standard connection, and verify a read-only Woo ability first. Recommend credential revocation or code removal only after checking for other consumers and obtaining explicit approval.
 
-## Failure modes
+## Troubleshoot
 
-| Issue                      | Cause                        | Solution                                              |
-| -------------------------- | ---------------------------- | ----------------------------------------------------- |
-| Server unavailable         | MCP feature not enabled      | Run the WP-CLI command or add the filter              |
-| Authentication fails       | Invalid credentials          | Verify key:secret format, regenerate if needed        |
-| Connection refused         | HTTPS required on production | Ensure site uses HTTPS                                |
-| Connection refused (local) | HTTP blocked                 | Add `woocommerce_mcp_allow_insecure_transport` filter |
+- No Abilities API: upgrade WordPress; do not fall back to the deprecated Woo server.
+- No adapter/default server: determine whether Woo's bundled adapter or the standalone WordPress adapter should own it; avoid duplicate packages.
+- No Woo abilities: verify Woo activation/version, inspect `wp ability list`, and check registration errors.
+- Authentication failure: verify the WordPress user/Application Password and HTTPS endpoint without printing secrets.
+- Permission failure: inspect the ability permission callback and current user's capabilities.
+- Unexpected write exposure: review ability annotations, schema, permissions, and MCP public metadata before continuing.
 
-## Available MCP operations
+## Compatibility
 
-Once connected, the MCP server provides these capabilities:
-
-- **Products**: List, retrieve, create, update, delete (with filtering/pagination)
-- **Orders**: List, retrieve, create, update (with filtering/pagination)
-
-All operations respect WooCommerce's existing permission systems.
+Require WordPress 6.9+ and actual discovery of the needed Woo abilities. Treat the standard adapter and Woo MCP integration as evolving APIs and verify current documentation during every setup or migration.

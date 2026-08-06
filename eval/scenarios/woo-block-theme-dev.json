@@ -1,0 +1,16 @@
+{
+  "name": "Customize a Woo product template in a block theme",
+  "skills": ["woo-block-theme-dev"],
+  "query": "Restyle product prices and customize the single product template in this theme.",
+  "expected_behavior": [
+    "Confirm one unambiguous block-theme target and search current Woo theming docs",
+    "Use registered Woo block names in theme.json and valid HTML block templates",
+    "Account for saved Site Editor templates and styles",
+    "Stop without implementation when runtime confirms a classic active theme"
+  ],
+  "success_criteria": [
+    "Business behavior is not placed in the theme",
+    "Editor and frontend verification are both included",
+    "Classic themes do not receive block-theme edits"
+  ]
+}

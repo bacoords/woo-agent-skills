@@ -1,27 +1,36 @@
 # Packaging and installation
 
-This repo is the **source of truth** under `skills/`.
+The source of truth for skill entrypoints is `skills/`. Shared reference/script source lives in `shared/skill-resources/` and is materialized into each skill according to its manifest.
 
-To distribute skills to other repos/tools (without symlinks), use the skillpack scripts.
+## Prepare resources
 
-## Build dist
+```bash
+node shared/scripts/sync-skill-resources.mjs --write
+node shared/scripts/sync-skill-resources.mjs --check
+```
 
-Build a packaged copy under `dist/`:
+Commit materialized copies so a skill folder can be installed manually. Do not use symlinks.
 
-- `node shared/scripts/skillpack-build.mjs --clean`
+## Build
+
+```bash
+node shared/scripts/skillpack-build.mjs --clean
+```
 
 Outputs:
 
-- `dist/codex/.codex/skills/*` (OpenAI Codex repo layout)
-- `dist/vscode/.github/skills/*` (VS Code / Copilot repo layout)
-- `dist/claude/.claude/skills/*` (Claude Code repo layout)
+- `dist/codex/.codex/skills/*`
+- `dist/vscode/.github/skills/*`
+- `dist/claude/.claude/skills/*`
 
-## Install into another repo
+The builder refuses to run when materialized shared resources drift from their canonical source.
 
-1. Build dist (above).
-2. Install into a destination repo:
+## Install
 
-- `node shared/scripts/skillpack-install.mjs --dest=../some-repo --targets=codex,vscode,claude`
+```bash
+node shared/scripts/skillpack-install.mjs \
+  --dest=../some-repo \
+  --targets=codex,vscode,claude
+```
 
-By default, install mode is `replace` (it replaces only the skill directories it installs).
-
+Install mode defaults to `replace` per selected skill directory. Use `--skills=<comma-separated-names>` to select skills and `--dry-run` to preview.

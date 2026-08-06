@@ -1,0 +1,16 @@
+{
+  "name": "Choose a Woo settings surface",
+  "skills": ["woo-extension-dev"],
+  "query": "Add three product-related settings to this WooCommerce extension.",
+  "expected_behavior": [
+    "Inspect the project and available site before editing",
+    "Search the current Woo settings documentation",
+    "Choose an existing-tab section, WC_Settings_Page, WC_Settings_API owner, or admin page based on the actual requirement",
+    "Use prefixed IDs, Woo save behavior, sanitization, capabilities, and focused verification"
+  ],
+  "success_criteria": [
+    "The implementation surface is justified from project evidence and current docs",
+    "The agent does not create an unnecessary top-level settings page",
+    "Saved, empty, invalid, and unauthorized cases are covered"
+  ]
+}

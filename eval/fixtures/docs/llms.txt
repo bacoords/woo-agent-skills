@@ -1,0 +1,6 @@
+# WooCommerce developer documentation
+
+- [Settings APIs and admin pages](https://raw.githubusercontent.com/woocommerce/woocommerce/trunk/docs/extensions/settings-and-config/README.md) Choose between settings APIs, pages, sections, integrations, and admin pages.
+- [Getting started with Cart and Checkout extensibility](https://developer.woocommerce.com/docs/block-development/extensible-blocks/cart-and-checkout-blocks/): Extend block Cart and Checkout.
+- [Theming for Woo blocks](https://developer.woocommerce.com/docs/theming/block-theme-development/theming-woo-blocks/): Build WooCommerce block themes.
+- [Model Context Protocol Integration](https://developer.woocommerce.com/docs/features/mcp/): Expose Woo abilities through the WordPress MCP Adapter.

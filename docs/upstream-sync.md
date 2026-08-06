@@ -1,52 +1,19 @@
-# Upstream sync (automation plan)
+# Upstream documentation maintenance
 
-Goal: when upstream changes (WordPress core releases, Gutenberg releases, docs updates), the repo should **regenerate indexes** and (eventually) **open PRs** that update affected skills/references.
+Woo developer documentation is live and machine-readable:
 
-## What to automate first (low risk)
+- `https://developer.woocommerce.com/llms.txt` provides the searchable index.
+- `https://developer.woocommerce.com/llms-full.txt` provides the full Markdown export.
+- Individual `/docs/.../` pages are available by removing the trailing slash and appending `.md`.
 
-1. **Indexes and matrices**
-   - WordPress core version list (latest stable + recent).
-   - Gutenberg releases list (latest stable + recent).
-   - WordPress ↔ Gutenberg mapping table (derived from canonical docs where available).
-2. **Routing metadata refresh**
-   - Update `shared/references/*.json` files only.
+Skills must search the live index and fetch relevant pages at task time. Bundled references should contain durable decision rules and guardrails, not mirrors of full upstream pages.
 
-This keeps automation deterministic and reviewable before it starts rewriting skill prose.
+When an upstream contract changes:
 
-## Later automation (higher risk)
+1. Update the canonical reference under `shared/skill-resources/`.
+2. Update inspector/doc helper behavior if capability detection changed.
+3. Add a regression scenario and fixture test.
+4. Run resource sync, the eval harness, and all package builds.
+5. Include upstream source links and affected pathways in the pull request.
 
-- “Reference chunk regeneration” from upstream docs into `skills/*/references/*.md`.
-- Task-shaped deltas (e.g. a new Gutenberg package, new block APIs, changes in theme.json schema).
-- Semi-automated PRs that include:
-  - regenerated references
-  - updated checklists
-  - updated eval scenarios
-
-## Scripts
-
-- `shared/scripts/update-upstream-indices.mjs`
-  - Fetches upstream sources and rewrites JSON indexes in `shared/references/`.
-
-## CI / PR bot design (recommended)
-
-- Schedule a workflow (daily/weekly).
-- Run `shared/scripts/update-upstream-indices.mjs`.
-- If `git diff` is non-empty, open a PR with:
-  - a summary of changes
-  - links to upstream release notes
-  - a checklist for human review (“does this impact blocks/themes/plugin workflows?”)
-
-## Validation
-
-- Always run `node eval/harness/run.mjs`.
-- Optional: use Agent Skills reference validator:
-  - `skills-ref validate skills/<skill-name>`
-
-## Canonical sources
-
-The automation should prefer canonical sources and avoid scraping where possible.
-
-- WordPress core releases and API endpoints (official WordPress APIs)
-- Gutenberg releases (GitHub releases)
-- WordPress developer docs (used for the WP↔Gutenberg mapping when no API exists)
-
+Automated refreshes may update indexes or flag deltas, but should not rewrite procedural guidance without review.

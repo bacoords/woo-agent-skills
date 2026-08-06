@@ -1,0 +1,16 @@
+{
+  "name": "Select block or classic Checkout extensibility",
+  "skills": ["woo-extension-dev"],
+  "query": "Add and persist a delivery instructions field during checkout.",
+  "expected_behavior": [
+    "Detect the assigned Checkout page separately from the active theme",
+    "Search current additional-checkout-field and hook-alternative documentation",
+    "Use the block field API for block Checkout or classic hooks only for confirmed shortcode Checkout",
+    "Validate server-side and persist through Woo order CRUD"
+  ],
+  "success_criteria": [
+    "No pathway is inferred from theme type alone",
+    "Unknown runtime state causes a focused support question when necessary",
+    "The selected pathway receives focused tests"
+  ]
+}

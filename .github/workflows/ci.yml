@@ -18,13 +18,14 @@ jobs:
       - name: Run local eval harness
         run: node eval/harness/run.mjs
 
-      - name: Build skillpacks (Codex + VS Code)
-        run: node shared/scripts/skillpack-build.mjs --clean --out=dist --targets=codex,vscode
+      - name: Build skillpacks
+        run: node shared/scripts/skillpack-build.mjs --clean --out=dist --targets=codex,vscode,claude
 
       - name: Install skillpacks (smoke)
         run: |
-          rm -rf /tmp/skillpack-install-test
-          mkdir -p /tmp/skillpack-install-test
-          node shared/scripts/skillpack-install.mjs --from=dist --dest=/tmp/skillpack-install-test --targets=codex,vscode
-          test -f /tmp/skillpack-install-test/.codex/skills/woo-cart-checkout/SKILL.md
-          test -f /tmp/skillpack-install-test/.github/skills/woo-cart-checkout/SKILL.md
+          skillpack_test_dir="$(mktemp -d)"
+          node shared/scripts/skillpack-install.mjs --from=dist --dest="$skillpack_test_dir" --targets=codex,vscode,claude
+          test -f "$skillpack_test_dir/.codex/skills/woo-extension-dev/SKILL.md"
+          test -f "$skillpack_test_dir/.github/skills/woo-block-theme-dev/SKILL.md"
+          test -f "$skillpack_test_dir/.claude/skills/woo-mcp-connect/SKILL.md"
+          test ! -e "$skillpack_test_dir/.codex/skills/woo-cart-checkout"

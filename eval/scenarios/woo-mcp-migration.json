@@ -1,0 +1,16 @@
+{
+  "name": "Migrate a legacy Woo MCP client",
+  "skills": ["woo-mcp-connect"],
+  "query": "Migrate a client configured for /wp-json/woocommerce/mcp with X-MCP-API-Key to the regular WordPress MCP Adapter.",
+  "expected_behavior": [
+    "Recognize the old configuration as deprecated migration input",
+    "Produce a redacted diff to the default WordPress MCP server and current authentication",
+    "Verify discovery and a read-only canonical Woo ability before cleanup",
+    "Require explicit approval before revoking REST keys or removing legacy filters"
+  ],
+  "success_criteria": [
+    "Legacy configuration is not presented as a supported fallback",
+    "Other consumers are checked before credential revocation",
+    "Migration completes through the standard adapter tools"
+  ]
+}
